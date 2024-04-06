@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travely/pages/map_page.dart';
+import 'package:travely/pages/navigator_bar.dart';
 
 void main()=>runApp(const Travely());
 
@@ -17,7 +17,7 @@ class Travely extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MapPage());
+      home: const NavigatorBar());
   }
 }
 

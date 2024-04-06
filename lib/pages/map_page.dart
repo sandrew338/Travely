@@ -9,13 +9,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  int _selectedIndex = 0;
 
   static const LatLng _pGooglePlex = LatLng(49.8401193, 24.0245918);
   @override
@@ -44,7 +37,7 @@ class _MapPageState extends State<MapPage> {
                     icon: Icon(Icons.menu),
                     onPressed: () {},
                   ),
-                  Expanded(
+                  const Expanded(
                     child: TextField(
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
@@ -56,7 +49,7 @@ class _MapPageState extends State<MapPage> {
                           hintText: "Search..."),
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
@@ -72,94 +65,10 @@ class _MapPageState extends State<MapPage> {
         ],
       ),
       
-      bottomNavigationBar:BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.green[100],
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.map, color: Colors.red), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.route), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.save), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.man), label: ''),
-          ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.redAccent,
-        onTap: _onItemTapped,
+      
 //child: bottomAppBarContents,
-      ),
+      );
 
-    );
-  }
-}
-class SearchBarApp extends StatefulWidget {
-  const SearchBarApp({super.key});
-
-  @override
-  State<SearchBarApp> createState() => _SearchBarAppState();
-}
-
-class _SearchBarAppState extends State<SearchBarApp> {
-  bool isDark = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData themeData = ThemeData(
-        useMaterial3: true,
-        brightness: isDark ? Brightness.dark : Brightness.light);
-
-    return MaterialApp(
-      theme: themeData,
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Search Bar Sample')),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SearchAnchor(
-              builder: (BuildContext context, SearchController controller) {
-                return SearchBar(
-                  controller: controller,
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onTap: () {
-                    controller.openView();
-                  },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
-                  leading: const Icon(Icons.search),
-                  trailing: <Widget>[
-                    Tooltip(
-                      message: 'Change brightness mode',
-
-                      child: IconButton(
-                        isSelected: isDark,
-                        onPressed: () {
-                          setState(() {
-                            isDark = !isDark;
-                          });
-                        },
-                        icon: const Icon(Icons.wb_sunny_outlined),
-                        selectedIcon: const Icon(Icons.brightness_2_outlined),
-                      ),
-                    )
-                  ],
-                );
-              }, suggestionsBuilder:
-              (BuildContext context, SearchController controller) {
-            return List<ListTile>.generate(5, (int index) {
-              final String item = 'item $index';
-              return ListTile(
-                title: Text(item),
-                onTap: () {
-                  setState(() {
-                    controller.closeView(item);
-                  });
-                },
-              );
-            });
-          }),
-        ),
-      ),
-    );
   }
 }
 
