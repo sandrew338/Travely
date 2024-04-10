@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SavedPage extends StatefulWidget {
-  const SavedPage({super.key});
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({super.key});
 
   @override
-  State<SavedPage> createState() => _SavedPageState();
+  State<CalendarPage> createState() => CalendardPageState();
 }
 
-class _SavedPageState extends State<SavedPage> {
+class CalendardPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title:Text("SavedPage")),);
+    return Scaffold(appBar: AppBar(title:const Text("CalendarPage")),);
   }
 }

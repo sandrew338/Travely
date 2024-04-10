@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class SavedPage extends StatefulWidget {
-  const SavedPage({super.key});
+class RoutesPage extends StatefulWidget {
+  const RoutesPage({super.key});
 
   @override
-  State<SavedPage> createState() => _SavedPageState();
+  State<RoutesPage> createState() => _RoutesPageState();
 }
 
-class _SavedPageState extends State<SavedPage> {
+class _RoutesPageState extends State<RoutesPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title:Text("SavedPage")),);
+    return Scaffold(appBar: AppBar(title:Text("RoutesPage")),);
   }
 }
