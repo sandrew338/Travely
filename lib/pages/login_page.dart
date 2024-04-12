@@ -27,16 +27,16 @@ class LoginPage extends StatelessWidget {
                 height: 50,
               ),
               //logo
-              const Icon(
-                Icons.lock,
-                size: 100,
+              Image.asset(
+                "lib/images/travelly.png",
+                height: 200,
               ),
 
               const SizedBox(
-                height: 50,
+                height: 10,
               ),
               //welcome back
-              Text("Привіт, тебе давно не було!",
+              Text("Привіт!",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -89,7 +89,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               //or continue with
               Padding(
@@ -104,7 +104,7 @@ class LoginPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Або увійди через",
+                        "Або увійти через",
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ),
@@ -118,7 +118,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 20,
               ),
 
               //google + apple logo
@@ -134,7 +134,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 25,
               ),
 
               //not a member ? register now
