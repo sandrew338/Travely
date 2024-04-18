@@ -27,7 +27,7 @@ class _MapPageState extends State<MapPage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(80)),
-                color: Colors.white,
+                color: Color(0xFFECEBE4),
               ),
 
               child: Row(
