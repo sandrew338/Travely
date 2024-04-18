@@ -4,20 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
+import 'package:travely/pages/navigator_bar.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  final BuildContext context;
+
+  LoginPage({required this.context, Key? key}) : super(key: key);
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+
 
 //text editing controller
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
   //sign user in method
-  void signUserIn() {}
 
+class _LoginPageState extends State<LoginPage> {
   @override
+  void signUserIn(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NavigatorBar()),
+    );
+  }
   Widget build(BuildContext context) {
-    return Scaffold(
+    // Build your login page UI here
+    return
+  Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -85,7 +102,7 @@ class LoginPage extends StatelessWidget {
               ),
               //sign in button
               MyButton(
-                onTap: signUserIn,
+                onTap:(){ signUserIn(context);}
               ),
 
               const SizedBox(
@@ -118,7 +135,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 25,
               ),
 
               //google + apple logo
@@ -134,7 +151,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 25,
               ),
 
               //not a member ? register now
