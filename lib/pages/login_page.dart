@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:travely/components/my_button.dart';
@@ -7,7 +7,7 @@ import 'package:travely/components/square_tile.dart';
 import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -20,7 +20,6 @@ final passwordController = TextEditingController();
 //sign user in method
 
 class _LoginPageState extends State<LoginPage> {
-  @override
   void signUserIn(BuildContext context) {
     Navigator.push(
       context,
@@ -28,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     // Build your login page UI here
     return Scaffold(
