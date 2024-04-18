@@ -7,20 +7,17 @@ import 'package:travely/components/square_tile.dart';
 import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
-
   LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-
-
 //text editing controller
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+final usernameController = TextEditingController();
+final passwordController = TextEditingController();
 
-  //sign user in method
+//sign user in method
 
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -30,10 +27,10 @@ class _LoginPageState extends State<LoginPage> {
       MaterialPageRoute(builder: (context) => const NavigatorBar()),
     );
   }
+
   Widget build(BuildContext context) {
     // Build your login page UI here
-    return
-  Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -100,9 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: 25,
               ),
               //sign in button
-              MyButton(
-                onTap:(){ signUserIn(context);}
-              ),
+              MyButton(onTap: () {
+                signUserIn(context);
+              }),
 
               const SizedBox(
                 height: 50,

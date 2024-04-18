@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travely/pages/login_page.dart';
-import 'package:travely/pages/navigator_bar.dart';
 
 void main() => runApp(const Travely());
 
