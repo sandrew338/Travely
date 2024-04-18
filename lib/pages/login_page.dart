@@ -6,22 +6,34 @@ import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
 import 'package:travely/pages/navigator_bar.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+
+  LoginPage({Key? key}) : super(key: key);
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+
 
 //text editing controller
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
   //sign user in method
+
+class _LoginPageState extends State<LoginPage> {
+  @override
   void signUserIn(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NavigatorBar()));
+      context,
+      MaterialPageRoute(builder: (context) => const NavigatorBar()),
+    );
   }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    // Build your login page UI here
+    return
+  Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -31,16 +43,16 @@ class LoginPage extends StatelessWidget {
                 height: 50,
               ),
               //logo
-              Image.asset(
-                "lib/images/travelly.png",
-                height: 200,
+              const Icon(
+                Icons.lock,
+                size: 100,
               ),
 
               const SizedBox(
-                height: 10,
+                height: 50,
               ),
               //welcome back
-              Text("Привіт!",
+              Text("Привіт, тебе давно не було!",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -89,13 +101,11 @@ class LoginPage extends StatelessWidget {
               ),
               //sign in button
               MyButton(
-                onTap: () {
-                  signUserIn(context);
-                },
+                onTap:(){ signUserIn(context);}
               ),
 
               const SizedBox(
-                height: 30,
+                height: 50,
               ),
               //or continue with
               Padding(
@@ -110,7 +120,7 @@ class LoginPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Або увійти через",
+                        "Або увійди через",
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ),
@@ -124,7 +134,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 20,
+                height: 25,
               ),
 
               //google + apple logo
