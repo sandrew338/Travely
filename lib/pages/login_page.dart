@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
+import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -13,7 +14,10 @@ class LoginPage extends StatelessWidget {
   final passwordController = TextEditingController();
 
   //sign user in method
-  void signUserIn() {}
+  void signUserIn(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NavigatorBar()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +89,9 @@ class LoginPage extends StatelessWidget {
               ),
               //sign in button
               MyButton(
-                onTap: signUserIn,
+                onTap: () {
+                  signUserIn(context);
+                },
               ),
 
               const SizedBox(
