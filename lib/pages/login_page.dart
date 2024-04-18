@@ -8,9 +8,10 @@ import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
 
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -23,13 +24,13 @@ class LoginPage extends StatefulWidget {
   //sign user in method
 
 class _LoginPageState extends State<LoginPage> {
-  @override
   void signUserIn(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const NavigatorBar()),
     );
   }
+  @override
   Widget build(BuildContext context) {
     // Build your login page UI here
     return

@@ -14,7 +14,7 @@ class NavigatorBar extends StatefulWidget {
 }
 
 class _NavigatorBarState extends State<NavigatorBar> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   final List<Widget> _screens = [
     const MapPage(),
     const RoutesPage(),
@@ -40,15 +40,15 @@ class _NavigatorBarState extends State<NavigatorBar> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        children: _screens,
         onPageChanged: _onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
+        children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
           elevation: 0,
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
-          backgroundColor: Color(0xFFECEBE4),
+          backgroundColor: const Color(0xFFECEBE4),
           onTap: _onItemTapped,
           showUnselectedLabels: false,
           showSelectedLabels: false,
