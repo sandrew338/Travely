@@ -7,9 +7,8 @@ import 'package:travely/components/square_tile.dart';
 import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
-  final BuildContext context;
 
-  LoginPage({required this.context, Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
