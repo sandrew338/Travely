@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Travely1",
+            "name": "Travely",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "Travely1 (profile mode)",
+            "name": "Travely (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "Travely1 (release mode)",
+            "name": "Travely (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

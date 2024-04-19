@@ -10,6 +10,6 @@ class RoutesPage extends StatefulWidget {
 class _RoutesPageState extends State<RoutesPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title:Text("RoutesPage")),);
+    return Scaffold(appBar: AppBar(title:const Text("RoutesPage")),);
   }
 }

@@ -1,22 +1,35 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
 
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
+import 'package:travely/pages/navigator_bar.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
-
-//text editing controller
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  //sign user in method
-  void signUserIn() {}
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
+  _LoginPageState createState() => _LoginPageState();
+}
+
+//text editing controller
+final usernameController = TextEditingController();
+final passwordController = TextEditingController();
+
+//sign user in method
+
+class _LoginPageState extends State<LoginPage> {
+  void signUserIn(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const NavigatorBar()),
+    );
+  }
+  @override
   Widget build(BuildContext context) {
+    // Build your login page UI here
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -27,16 +40,16 @@ class LoginPage extends StatelessWidget {
                 height: 50,
               ),
               //logo
-              Image.asset(
-                "lib/images/travelly.png",
-                height: 200,
+              const Icon(
+                Icons.lock,
+                size: 100,
               ),
 
               const SizedBox(
-                height: 10,
+                height: 50,
               ),
               //welcome back
-              Text("Привіт!",
+              Text("Привіт, тебе давно не було!",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -84,12 +97,12 @@ class LoginPage extends StatelessWidget {
                 height: 25,
               ),
               //sign in button
-              MyButton(
-                onTap: signUserIn,
-              ),
+              MyButton(onTap: () {
+                signUserIn(context);
+              }),
 
               const SizedBox(
-                height: 30,
+                height: 50,
               ),
               //or continue with
               Padding(
@@ -104,7 +117,7 @@ class LoginPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Або увійти через",
+                        "Або увійди через",
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ),
@@ -118,7 +131,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               const SizedBox(
-                height: 20,
+                height: 25,
               ),
 
               //google + apple logo
