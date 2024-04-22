@@ -17,10 +17,6 @@ class NavigatorBar extends StatefulWidget {
 
 class _NavigatorBarState extends State<NavigatorBar> {
   final PageController _pageController = PageController();
-<<<<<<< HEAD
-  final List<Widget> _screens = [const MapPage(), const RoutesPage(), const SavedPage(), const CalendarPage(), const ProfilePage()];
-    int _selectedIndex = 0;
-=======
   final List<Widget> _screens = [
     const MapPage(),
     const RoutesPage(),
@@ -29,7 +25,6 @@ class _NavigatorBarState extends State<NavigatorBar> {
     const ProfilePage()
   ];
   int _selectedIndex = 0;
->>>>>>> origin/Ivan_branch
 
   void _onPageChanged(int selectedIndex) {
     setState(() {
@@ -41,10 +36,6 @@ class _NavigatorBarState extends State<NavigatorBar> {
     print("Selected index: $selectedIndex");
     _pageController.jumpToPage(selectedIndex);
   }
-<<<<<<< HEAD
-  Color selectColor(int index)=>_selectedIndex == index ? const Color.fromARGB(255, 191, 68, 68): Colors.grey;
-=======
->>>>>>> origin/Ivan_branch
 
   @override
   Widget build(BuildContext context) {
