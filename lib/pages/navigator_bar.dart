@@ -13,8 +13,8 @@ class NavigatorBar extends StatefulWidget {
 }
 
 class _NavigatorBarState extends State<NavigatorBar> {
-  PageController _pageController = PageController();
-  List<Widget> _screens = [const MapPage(), const RoutesPage(), const SavedPage(), const CalendarPage(), const ProfilePage()];
+  final PageController _pageController = PageController();
+  final List<Widget> _screens = [const MapPage(), const RoutesPage(), const SavedPage(), const CalendarPage(), const ProfilePage()];
     int _selectedIndex = 0;
 
   void _onPageChanged(int selectedIndex) {
@@ -23,19 +23,19 @@ class _NavigatorBarState extends State<NavigatorBar> {
      });
   }
   void _onItemTapped(int selectedIndex) {
-    print("Selected index: "+ selectedIndex.toString());
+    print("Selected index: $selectedIndex");
     _pageController.jumpToPage(selectedIndex);
   }
-  Color selectColor(int index)=>_selectedIndex == index ? Color.fromARGB(255, 191, 68, 68): Colors.grey;
+  Color selectColor(int index)=>_selectedIndex == index ? const Color.fromARGB(255, 191, 68, 68): Colors.grey;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        children: _screens,
         onPageChanged: _onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
+        children: _screens,
       ),
       bottomNavigationBar:
     BottomNavigationBar(

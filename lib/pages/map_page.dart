@@ -18,14 +18,14 @@ class _MapPageState extends State<MapPage> {
         children: <Widget>[
           // Replace this container with your Map widget
           Container(
-              child:GoogleMap(initialCameraPosition: CameraPosition(target: _pGooglePlex, zoom: 16))
+              child:const GoogleMap(initialCameraPosition: CameraPosition(target: _pGooglePlex, zoom: 16))
           ),
           Positioned(
             top: 30,
             right: 15,
             left: 15,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(80)),
                 color: Colors.white,
               ),
@@ -34,7 +34,7 @@ class _MapPageState extends State<MapPage> {
                 children: <Widget>[
                   IconButton(
                     splashColor: Colors.grey,
-                    icon: Icon(Icons.menu),
+                    icon: const Icon(Icons.menu),
                     onPressed: () {},
                   ),
                   const Expanded(
@@ -50,7 +50,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                   ),
                   const Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
                       child: Text('RD'),
