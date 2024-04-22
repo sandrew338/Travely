@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travely/pages/navigator_bar.dart';
+import 'package:travely/pages/login_page.dart';
 
-void main()=>runApp(const Travely());
+void main() => runApp(const Travely());
 
 class Travely extends StatelessWidget {
   const Travely({super.key});
@@ -17,7 +17,6 @@ class Travely extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const NavigatorBar());
+      home: const LoginPage());
   }
 }
-

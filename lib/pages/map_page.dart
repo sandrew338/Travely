@@ -17,9 +17,13 @@ class _MapPageState extends State<MapPage> {
       body: Stack(
         children: <Widget>[
           // Replace this container with your Map widget
+<<<<<<< HEAD
           Container(
               child:const GoogleMap(initialCameraPosition: CameraPosition(target: _pGooglePlex, zoom: 16))
           ),
+=======
+          const GoogleMap(initialCameraPosition: CameraPosition(target: _pGooglePlex, zoom: 16)),
+>>>>>>> origin/Ivan_branch
           Positioned(
             top: 30,
             right: 15,
