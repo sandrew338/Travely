@@ -1,32 +1,61 @@
 // ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
 
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
-import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
+class _LoginPageState extends State<LoginPage> {
 //text editing controller
-final usernameController = TextEditingController();
-final passwordController = TextEditingController();
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
 
 //sign user in method
+  void signUserIn() async {
+    //show loading circle
+    showDialog(
+        context: context,
+        builder: (builder) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    //try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("No user found");
+        wrongEmailMessage();
+      } else if (e.code == "wrong-found") {
+        print("Wrong password buddy");
+        wrongPasswordMessage();
 
-class _LoginPageState extends State<LoginPage> {
-  void signUserIn(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const NavigatorBar()),
-    );
+      }
+    }
+
+    Navigator.pop(context);
   }
+void wrongEmailMessage()
+{
+
+}
+void wrongPasswordMessage()
+{
+  
+}
   @override
   Widget build(BuildContext context) {
     // Build your login page UI here
@@ -61,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
               //username textfield
 
               MyTextField(
-                controller: usernameController,
+                controller: emailController,
                 hintText: "Ім'я користувача",
                 obscureText: false,
               ),
@@ -97,9 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: 25,
               ),
               //sign in button
-              MyButton(onTap: () {
-                signUserIn(context);
-              }),
+              MyButton(
+                onTap: signUserIn,
+              ),
 
               const SizedBox(
                 height: 50,

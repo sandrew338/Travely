@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travely/pages/login_page.dart';
+import 'package:travely/pages/auth_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:travely/pages/profile_page.dart';
 import 'firebase_options.dart';
@@ -25,6 +25,10 @@ class Travely extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+<<<<<<< HEAD
         home: const ProfilePage());
+=======
+        home: const AuthPage());
+>>>>>>> origin/Ivan_branch
   }
 }

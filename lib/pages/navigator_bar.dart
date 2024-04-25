@@ -22,7 +22,7 @@ class _NavigatorBarState extends State<NavigatorBar> {
     const RoutesPage(),
     const SavedPage(),
     const CalendarPage(),
-    const ProfilePage()
+    ProfilePage()
   ];
   int _selectedIndex = 0;
 
