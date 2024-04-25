@@ -6,22 +6,23 @@ import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
 //text editing controller
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
 //sign user in method
-  void signUserIn() async {
+  void signUserUp() async {
     //show loading circle
     showDialog(
         context: context,
@@ -30,19 +31,24 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
-    //try sign in
+    //try signup
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      if(passwordController.text == confirmPasswordController.text)
+      {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
-        password: passwordController.text,
-      );
+        password: passwordController.text,);
+      }
+      else{
+        showErrorMessage("Password don't match!");
+      }
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      showErrorImage(e.code);
+      showErrorMessage(e.code);
     }
   }
-  void showErrorImage(String message) {
+  void showErrorMessage(String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -85,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                     ),
                     //welcome back
-                    Text("РџСЂРёРІС–С‚, С‚РµР±Рµ РґР°РІРЅРѕ РЅРµ Р±СѓР»Рѕ!",
+                    Text("Створімо акаунт для Вас!",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -113,6 +119,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(
+                      height: 25,
+                    ),
+                    //password textfield
+                    MyTextField(
+                      controller: confirmPasswordController,
+                      hintText: "Підтвердіть пароль",
+                      obscureText: true,
+                    ),
+
+                    const SizedBox(
                       height: 10,
                     ),
                     //forgot password?
@@ -135,8 +151,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     //sign in button
                     MyButton(
-                      onTap: signUserIn,
-                      text: "Увійти",
+                      onTap: signUserUp,
+                      text: "Зареєструватися",
                     ),
 
                     const SizedBox(
@@ -194,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
 
                         Text(
-                          "Р©Рµ РЅРµ Р·Р°СЂРµС”СЃС‚СЂРѕРІР°РЅС–?",
+                          "Вже маєте акаунт?",
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(
@@ -203,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: widget.onTap,
                           child: const Text(
-                            "Р—Р°СЂРµС”СЃС‚СЂСѓРІР°С‚РёСЃСЊ Р·Р°СЂР°Р·!",
+                            "Увійдіть!",
                             style: TextStyle(
                                 color: Colors.blue, fontWeight: FontWeight.bold),
                           ),

@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -10,6 +9,7 @@ class ProfilePage extends StatelessWidget {
     FirebaseAuth.instance.signOut();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Text("ProfilePage")),
