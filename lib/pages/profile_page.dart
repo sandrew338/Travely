@@ -5,7 +5,6 @@ import 'package:flutter_svg/svg.dart';
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
-  @override
   final user = FirebaseAuth.instance.currentUser;
   void signUserOut() {
     FirebaseAuth.instance.signOut();

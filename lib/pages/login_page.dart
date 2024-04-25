@@ -35,27 +35,39 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text,
         password: passwordController.text,
       );
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
       if (e.code == "user-not-found") {
         print("No user found");
         wrongEmailMessage();
       } else if (e.code == "wrong-found") {
         print("Wrong password buddy");
         wrongPasswordMessage();
-
       }
     }
-
-    Navigator.pop(context);
   }
-void wrongEmailMessage()
-{
 
-}
-void wrongPasswordMessage()
-{
-  
-}
+  void wrongEmailMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Incorrect Email!"),
+          );
+        });
+  }
+
+  void wrongPasswordMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Incorrect Password!"),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build your login page UI here
