@@ -1,4 +1,5 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
+
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
         context: context,
         builder: (builder) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         });
@@ -56,8 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         if (e.code == "user-not-found") {
         print("No user found");
         wrongEmailMessage();
-      } else if (e.code == "wrong-found") {
-        print("Wrong password buddy");
+      } else if (e.code == 'wrong-found') {
         wrongPasswordMessage();
       }*/
   }
@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                     ),
                     //welcome back
-                    Text("Привіт, тебе давно не було!",
+                    const Text("Привіт, тебе давно не було!",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                     //sign in button
                     MyButton(
                       onTap: signUserIn,
-                      text: "�����",
+                      text: "Увійти",
                     ),
 
                     const SizedBox(

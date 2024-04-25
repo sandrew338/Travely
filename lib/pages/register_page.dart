@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -28,19 +28,18 @@ class _RegisterPageState extends State<RegisterPage> {
     showDialog(
         context: context,
         builder: (builder) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         });
     //try signup
     try {
-      if(passwordController.text == confirmPasswordController.text)
-      {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,);
-      }
-      else{
+      if (passwordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      } else {
         showErrorMessage("Password don't match!");
       }
       Navigator.pop(context);
@@ -49,6 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
       showErrorMessage(e.code);
     }
   }
+
   void showErrorMessage(String message) {
     showDialog(
         context: context,
@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
           );
         });
 
-        /*
+    /*
         if (e.code == "user-not-found") {
         print("No user found");
         wrongEmailMessage();
@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 50,
                     ),
                     //welcome back
-                    Text("—Ú‚Ó≥ÏÓ ‡Í‡ÛÌÚ ‰Îˇ ¬‡Ò!",
+                    const Text("–†–µ—î—Å—Ç—Ä–∞—Ü—ñ—è!",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -125,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     //password textfield
                     MyTextField(
                       controller: confirmPasswordController,
-                      hintText: "œ≥‰Ú‚Â‰≥Ú¸ Ô‡ÓÎ¸",
+                      hintText: "–ü—ñ–¥—Ç–≤–µ—Ä–¥–∂–µ–Ω–Ω—è –ø–∞—Ä–æ–ª—é",
                       obscureText: true,
                     ),
 
@@ -138,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     //sign in button
                     MyButton(
                       onTap: signUserUp,
-                      text: "«‡Â∫ÒÚÛ‚‡ÚËÒˇ",
+                      text: "–ó–∞—Ä–µ—î—Å—Ç—Ä—É–≤–∞—Ç–∏—Å—è",
                     ),
 
                     const SizedBox(
@@ -157,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              "–ê–±–æ —É–≤—ñ–π–¥–∏ —á–µ—Ä–µ–∑",
+                              "–ê–±–æ –∑–∞—Ä–µ—î—Å—Ç—Ä—É–≤–∞—Ç–∏—Å—å —á–µ—Ä–µ–∑",
                               style: TextStyle(color: Colors.grey[700]),
                             ),
                           ),
@@ -179,14 +179,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SquareTile(
-                          onTap:()=>AuthService().signInWithGoogle(),
-                          imagePath: "lib/images/google.png"),
+                            onTap: () => AuthService().signInWithGoogle(),
+                            imagePath: "lib/images/google.png"),
                         const SizedBox(
                           width: 25,
                         ),
                         SquareTile(
+<<<<<<< HEAD
                           onTap:()=>{},
                           imagePath: "lib/images/apple.png")
+=======
+                            onTap: () => AuthService().signInWithGoogle(),
+                            imagePath: "lib/images/apple.png")
+>>>>>>> travely/Ivan_branch
                       ],
                     ),
 
@@ -198,9 +203,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-
                         Text(
-                          "¬ÊÂ Ï‡∫ÚÂ ‡Í‡ÛÌÚ?",
+                          "–í–∂–µ –∑–∞—Ä–µ—î—Å—Ç—Ä–æ–≤–∞–Ω—ñ?",
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(
@@ -209,9 +213,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         GestureDetector(
                           onTap: widget.onTap,
                           child: const Text(
-                            "”‚≥È‰≥Ú¸!",
+                            "–£–≤—ñ–π—Ç–∏ –∑–∞—Ä–∞–∑!",
                             style: TextStyle(
-                                color: Colors.blue, fontWeight: FontWeight.bold),
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
                           ),
                         )
                       ],

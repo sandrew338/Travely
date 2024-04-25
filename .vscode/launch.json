@@ -4,44 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
             "name": "Travely",
-=======
-            "name": "Travely1",
->>>>>>> origin/Ivan_branch
-=======
-            "name": "Travely",
->>>>>>> origin/Ivan_branch
             "request": "launch",
             "type": "dart"
         },
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
             "name": "Travely (profile mode)",
-=======
-            "name": "Travely1 (profile mode)",
->>>>>>> origin/Ivan_branch
-=======
-            "name": "Travely (profile mode)",
->>>>>>> origin/Ivan_branch
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
             "name": "Travely (release mode)",
-=======
-            "name": "Travely1 (release mode)",
->>>>>>> origin/Ivan_branch
-=======
-            "name": "Travely (release mode)",
->>>>>>> origin/Ivan_branch
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
