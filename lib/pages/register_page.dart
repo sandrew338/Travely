@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
 
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
@@ -7,22 +7,23 @@ import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
 import 'package:travely/services/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
 //text editing controller
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
 //sign user in method
-  void signUserIn() async {
+  void signUserUp() async {
     //show loading circle
     showDialog(
         context: context,
@@ -31,19 +32,24 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
-    //try sign in
+    //try signup
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      if(passwordController.text == confirmPasswordController.text)
+      {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
-        password: passwordController.text,
-      );
+        password: passwordController.text,);
+      }
+      else{
+        showErrorMessage("Password don't match!");
+      }
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      showErrorImage(e.code);
+      showErrorMessage(e.code);
     }
   }
-  void showErrorImage(String message) {
+  void showErrorMessage(String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -56,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
         if (e.code == "user-not-found") {
         print("No user found");
         wrongEmailMessage();
-      } else if (e.code == 'wrong-found') {
+      } else if (e.code == "wrong-found") {
+        print("Wrong password buddy");
         wrongPasswordMessage();
       }*/
   }
@@ -85,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                     ),
                     //welcome back
-                    Text("РџСЂРёРІС–С‚, С‚РµР±Рµ РґР°РІРЅРѕ РЅРµ Р±СѓР»Рѕ!",
+                    Text("Створімо акаунт для Вас!",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -113,30 +120,25 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(
-                      height: 10,
+                      height: 25,
                     ),
-                    //forgot password?
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Р—Р°Р±СѓР»Рё РїР°СЂРѕР»СЊ?",
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
+                    //password textfield
+                    MyTextField(
+                      controller: confirmPasswordController,
+                      hintText: "Підтвердіть пароль",
+                      obscureText: true,
                     ),
 
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const SizedBox(
                       height: 25,
                     ),
                     //sign in button
                     MyButton(
-                      onTap: signUserIn,
-                      text: "пїЅпїЅпїЅпїЅпїЅ",
+                      onTap: signUserUp,
+                      text: "Зареєструватися",
                     ),
 
                     const SizedBox(
@@ -182,9 +184,8 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(
                           width: 25,
                         ),
-
                         SquareTile(
-                          onTap:()=>{},
+                          onTap:()=>AuthService().signInWithGoogle(),
                           imagePath: "lib/images/apple.png")
                       ],
                     ),
@@ -199,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
 
                         Text(
-                          "Р©Рµ РЅРµ Р·Р°СЂРµС”СЃС‚СЂРѕРІР°РЅС–?",
+                          "Вже маєте акаунт?",
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(
@@ -208,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: widget.onTap,
                           child: const Text(
-                            "Р—Р°СЂРµС”СЃС‚СЂСѓРІР°С‚РёСЃСЊ Р·Р°СЂР°Р·!",
+                            "Увійдіть!",
                             style: TextStyle(
                                 color: Colors.blue, fontWeight: FontWeight.bold),
                           ),
