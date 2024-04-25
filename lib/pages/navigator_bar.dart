@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:travely/pages/map_page.dart';
@@ -20,7 +22,7 @@ class _NavigatorBarState extends State<NavigatorBar> {
     const RoutesPage(),
     const SavedPage(),
     const CalendarPage(),
-    const ProfilePage()
+    ProfilePage()
   ];
   int _selectedIndex = 0;
 
@@ -31,7 +33,7 @@ class _NavigatorBarState extends State<NavigatorBar> {
   }
 
   void _onItemTapped(int selectedIndex) {
-    print("Selected index: " + selectedIndex.toString());
+    print("Selected index: $selectedIndex");
     _pageController.jumpToPage(selectedIndex);
   }
 

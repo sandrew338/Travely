@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -25,19 +27,19 @@ class CalendardPageState extends State<CalendarPage> {
   @override
   void dispose() {
     super.dispose();
-  } 
+  }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay){
-    if(!isSameDay(_selectedDay, selectedDay)){
-       setState(() {
-    _selectedDay = selectedDay;
-    _focusedDay = focusedDay;
-    _selectedEvents.value = _getEventsForDay(selectedDay);
-       });
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _selectedEvents.value = _getEventsForDay(selectedDay);
+      });
     }
-  } 
+  }
 
-  List<Event> _getEventsForDay(DateTime day){
+  List<Event> _getEventsForDay(DateTime day) {
     return events[day] ?? [];
   }
   
@@ -119,14 +121,12 @@ class CalendardPageState extends State<CalendarPage> {
           }),
         )
         ],
-        ),
-
+      ),
     );
   }
 }
 
-class Event{
-    final String title;
-    Event(this.title);
+class Event {
+  final String title;
+  Event(this.title);
 }
-

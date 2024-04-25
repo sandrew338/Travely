@@ -1,40 +1,77 @@
-// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, duplicate_ignore, prefer_const_literals_to_create_immutables, library_private_types_in_public_api
 
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import "package:flutter/material.dart";
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
-import 'package:travely/pages/navigator_bar.dart';
 
 class LoginPage extends StatefulWidget {
-
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-
-
+class _LoginPageState extends State<LoginPage> {
 //text editing controller
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+
   final passwordController = TextEditingController();
 
-  //sign user in method
-
-class _LoginPageState extends State<LoginPage> {
-  void signUserIn(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const NavigatorBar()),
-    );
+//sign user in method
+  void signUserIn() async {
+    //show loading circle
+    showDialog(
+        context: context,
+        builder: (builder) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    //try sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      if (e.code == "user-not-found") {
+        print("No user found");
+        wrongEmailMessage();
+      } else if (e.code == "wrong-found") {
+        print("Wrong password buddy");
+        wrongPasswordMessage();
+      }
+    }
   }
+
+  void wrongEmailMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Incorrect Email!"),
+          );
+        });
+  }
+
+  void wrongPasswordMessage() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Incorrect Password!"),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build your login page UI here
-    return
-  Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Center(
@@ -44,16 +81,16 @@ class _LoginPageState extends State<LoginPage> {
                 height: 50,
               ),
               //logo
-              Image.asset(
-                "lib/images/travelly.png",
-                height: 200,
+              const Icon(
+                Icons.lock,
+                size: 100,
               ),
 
               const SizedBox(
-                height: 10,
+                height: 50,
               ),
               //welcome back
-              Text("Привіт!",
+              Text("Привіт, тебе давно не було!",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -65,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
               //username textfield
 
               MyTextField(
-                controller: usernameController,
+                controller: emailController,
                 hintText: "Ім'я користувача",
                 obscureText: false,
               ),
@@ -102,11 +139,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               //sign in button
               MyButton(
-                onTap:(){ signUserIn(context);}
+                onTap: signUserIn,
               ),
 
               const SizedBox(
-                height: 30,
+                height: 50,
               ),
               //or continue with
               Padding(
@@ -121,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Або увійти через",
+                        "Або увійди через",
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ),
@@ -136,9 +173,13 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 height: 25,
 =======
                 height: 20,
+>>>>>>> origin/Ivan_branch
+=======
+                height: 25,
 >>>>>>> origin/Ivan_branch
               ),
 

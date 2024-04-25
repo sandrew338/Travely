@@ -48,7 +48,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                   ),
                   const Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
                       child: Text('RD'),
