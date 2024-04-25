@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/Ivan8/StudioProjects/Travely1/build/windows/x64/extracted/firebase_cpp_sdk_windows"
+    "cmake.sourceDirectory": "C:/Users/Ivan8/StudioProjects/Travely1/build/windows/x64/extracted/firebase_cpp_sdk_windows",
+    "cmake.configureOnOpen": true
 }

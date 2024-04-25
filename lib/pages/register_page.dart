@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
+import 'package:travely/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -131,21 +132,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    //forgot password?
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Забули пароль?",
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-
                     const SizedBox(
                       height: 25,
                     ),
@@ -192,11 +178,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SquareTile(imagePath: "lib/images/google.png"),
+                        SquareTile(
+                          onTap:()=>AuthService().signInWithGoogle(),
+                          imagePath: "lib/images/google.png"),
                         const SizedBox(
                           width: 25,
                         ),
-                        SquareTile(imagePath: "lib/images/apple.png")
+                        SquareTile(
+                          onTap:()=>AuthService().signInWithGoogle(),
+                          imagePath: "lib/images/apple.png")
                       ],
                     ),
 

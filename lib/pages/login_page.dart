@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
+import 'package:travely/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -176,11 +177,16 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SquareTile(imagePath: "lib/images/google.png"),
+                        SquareTile(
+                          onTap:()=>AuthService().signInWithGoogle(),
+                          imagePath: "lib/images/google.png"),
                         const SizedBox(
                           width: 25,
                         ),
-                        SquareTile(imagePath: "lib/images/apple.png")
+
+                        SquareTile(
+                          onTap:()=>{},
+                          imagePath: "lib/images/apple.png")
                       ],
                     ),
 
