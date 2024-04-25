@@ -8,8 +8,21 @@ class RoutesPage extends StatefulWidget {
 }
 
 class _RoutesPageState extends State<RoutesPage> {
+
+List routesList = [];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title:const Text("RoutesPage")),);
+    return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 195, 226, 251),
+    appBar: AppBar(
+      title:const Text("RoutesPage"),
+      centerTitle: true,
+      ),
+    body: ListView.builder(
+      itemCount: routesList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container();
+      } ));
   }
 }
