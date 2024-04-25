@@ -185,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: 25,
                         ),
                         SquareTile(
-                          onTap:()=>AuthService().signInWithGoogle(),
+                          onTap:()=>{},
                           imagePath: "lib/images/apple.png")
                       ],
                     ),
