@@ -1,51 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatelessWidget {
+  ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
+  final user = FirebaseAuth.instance.currentUser;
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
 
-class _ProfilePageState extends State<ProfilePage> {
-  //user
-  final currentUser = FirebaseAuth.instance.currentUser!;
-
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.grey[300],
-    appBar: AppBar(
-      title:const Text("ProfilePage"),
-      backgroundColor: Colors.grey[900]
-      
-      ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 50),
-
-          //profile pic
-          const Icon(Icons.person,
-          size: 72,),
-
-
-          //user email
-          Text(currentUser.email!,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey[700]),)
-
-          //user details
-
-          //username
-
-          //bio
-
-          //users routs
-
-        ],
-      )
-    );
+        appBar: AppBar(title: const Text("ProfilePage")),
+        body: Text("Logged in as ${user!.email}"),
+        floatingActionButton:
+            IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout)));
+    //SvgPicture.asset("assets/images/selected/time_past.svg")
   }
 }
