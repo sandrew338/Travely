@@ -44,16 +44,16 @@ class _LoginPageState extends State<LoginPage> {
                 height: 50,
               ),
               //logo
-              const Icon(
-                Icons.lock,
-                size: 100,
+              Image.asset(
+                "lib/images/travelly.png",
+                height: 200,
               ),
 
               const SizedBox(
-                height: 50,
+                height: 10,
               ),
               //welcome back
-              Text("Привіт, тебе давно не було!",
+              Text("Привіт!",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               //or continue with
               Padding(
@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Або увійди через",
+                        "Або увійти через",
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ),
@@ -135,7 +135,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               const SizedBox(
+<<<<<<< HEAD
                 height: 25,
+=======
+                height: 20,
+>>>>>>> origin/Ivan_branch
               ),
 
               //google + apple logo
