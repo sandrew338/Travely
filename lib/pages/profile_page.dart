@@ -23,6 +23,9 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        actions: [
+          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
+        ],
         title: const Text("ProfilePage"),
         backgroundColor: Colors.grey[900],
       ),
@@ -90,10 +93,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-
-      // Text("Logged in as ${currentUser!.email}"),
-      // floatingActionButton:
-      //     IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout)));
     ); //SvgPicture.asset("assets/images/selected/time_past.svg")
   }
 }
