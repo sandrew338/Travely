@@ -80,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //logo
                     const Icon(
@@ -89,7 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //welcome back
                     const Text("Реєстрація!",
@@ -185,13 +185,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: 25,
                         ),
                         SquareTile(
-<<<<<<< HEAD
-                          onTap:()=>{},
-                          imagePath: "lib/images/apple.png")
-=======
                             onTap: () => AuthService().signInWithGoogle(),
                             imagePath: "lib/images/apple.png")
->>>>>>> travely/Ivan_branch
                       ],
                     ),
 
