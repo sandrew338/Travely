@@ -13,15 +13,19 @@ class _ProfilePageState extends State<ProfilePage> {
   //user
   //final currentUser = FirebaseAuth.instance.currentUser!;
 
-
+void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.grey[300],
-    appBar: AppBar(
-      title:const Text("ProfilePage"),
-      backgroundColor: Colors.grey[900]
-      
+      backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        actions: [
+          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
+        ],
+        title: const Text("ProfilePage"),
+        backgroundColor: Colors.grey[900],
       ),
       body: ListView(
         children:  [
@@ -53,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
           //users routs
 
         ],
-      )
+      ),
     );
   }
 }

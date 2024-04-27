@@ -6,6 +6,7 @@ import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
 import 'package:travely/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -33,21 +34,36 @@ class _RegisterPageState extends State<RegisterPage> {
           );
         });
     //try signup
-    try {
-      if (passwordController.text == confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-      } else {
-        showErrorMessage("Password don't match!");
-      }
+
+    if (passwordController.text != confirmPasswordController.text) {
       Navigator.pop(context);
+      showErrorMessage("Password don't match!");
+      return;
+    }
+
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+        "username": emailController.text.split("@")[0],
+        "bio": "Empty bio"
+      });
+
+      if (context.mounted) Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       showErrorMessage(e.code);
     }
   }
+
+  //try creating the user
 
   void showErrorMessage(String message) {
     showDialog(
@@ -105,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     MyTextField(
                       controller: emailController,
-                      hintText: "Ім'я користувача",
+                      hintText: "Email",
                       obscureText: false,
                     ),
 
