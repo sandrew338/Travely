@@ -47,6 +47,11 @@ class _MapPageState extends State<MapPage> {
                           hintText: "Search..."),
                     ),
                   ),
+                  IconButton(
+                    splashColor: Colors.grey,
+                    icon: const Icon(Icons.filter_3_rounded),
+                    onPressed: () {},
+                  ),
                   const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
