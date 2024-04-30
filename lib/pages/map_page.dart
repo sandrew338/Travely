@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps/google_maps.dart';
+
+import 'package:travely/components/filter.dart';
+//import 'dart:ui' as ui;
+//import 'dart:html';
+
+//import 'package:web/src/dom/html.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -9,7 +16,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-
   static const LatLng _pGooglePlex = LatLng(49.8401193, 24.0245918);
   @override
   Widget build(BuildContext context) {
@@ -17,17 +23,20 @@ class _MapPageState extends State<MapPage> {
       body: Stack(
         children: <Widget>[
           // Replace this container with your Map widget
-          const GoogleMap(initialCameraPosition: CameraPosition(target: _pGooglePlex, zoom: 16)),
+          const GoogleMap(
+              initialCameraPosition:
+                  CameraPosition(target: _pGooglePlex, zoom: 16)),
           Positioned(
             top: 30,
             right: 15,
             left: 15,
+            height: 55,
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(80)),
-                color: Colors.white,
+                color: Color(0xFFFFFFFF
+),
               ),
-
               child: Row(
                 children: <Widget>[
                   IconButton(
@@ -42,16 +51,11 @@ class _MapPageState extends State<MapPage> {
                       textInputAction: TextInputAction.go,
                       decoration: InputDecoration(
                           border: InputBorder.none,
-                          contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
                           hintText: "Search..."),
                     ),
                   ),
-                  IconButton(
-                    splashColor: Colors.grey,
-                    icon: const Icon(Icons.filter_3_rounded),
-                    onPressed: () {},
-                  ),
+                  const Filter(),
                   const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
@@ -61,20 +65,53 @@ class _MapPageState extends State<MapPage> {
                   ),
                 ],
               ),
-
             ),
           ),
-
         ],
       ),
-      
-      
-//child: bottomAppBarContents,
-      );
 
+//child: bottomAppBarContents,
+    );
   }
 }
 
+/*
+class MapPage extends StatelessWidget {
+  const MapPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    String htmlId = "7";
+
+  // ignore: undefined_prefixed_name
+  ui.platformViewRegistry.registerViewFactory(htmlId, (int viewId) {
+    final myLatlng = LatLng(1.3521, 103.8198);
+
+    final mapOptions = MapOptions()
+      ..zoom = 10
+      ..center = LatLng(1.3521, 103.8198);
+
+    final elem = DivElement()
+      ..id = htmlId
+      ..style.width = "100%"
+      ..style.height = "100%"
+      ..style.border = 'none';
+
+    final map = GMap(elem as HTMLElement?, mapOptions);
+
+    Marker(MarkerOptions()
+      ..position = myLatlng
+      ..map = map
+      ..title = 'Hello World!'
+      );
+
+    return elem;
+  });
+
+  return HtmlElementView(viewType: htmlId);
+  }
+}
+*/
 /////////////////////////////////////////////////////////////////////////////////////
 // class ExampleStaggeredAnimations extends StatefulWidget {
 //   const ExampleStaggeredAnimations({
