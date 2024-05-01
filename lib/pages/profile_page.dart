@@ -11,9 +11,65 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  //user
   final currentUser = FirebaseAuth.instance.currentUser;
+  //all users
+  final usersCollection = FirebaseFirestore.instance.collection("Users");
 
-  Future<void> editField(String field) async {}
+  Future<void> editField(String field) async {
+    Map<String, String> fieldTranslations = {
+      "username": "ім'я користувача",
+      "bio": "опис",
+      // додайте інші поля та їх переклади тут
+    };
+
+    String translatedField = fieldTranslations[field] ?? field;
+
+    String newValue = "";
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: Text(
+          "Редагувати $translatedField",
+          style: const TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          autofocus: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Введіть $translatedField",
+            hintStyle: const TextStyle(color: Colors.grey),
+          ),
+          onChanged: (value) {
+            newValue = value;
+          },
+        ),
+        actions: [
+          TextButton(
+            child: const Text(
+              "Відмінити",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: const Text(
+              "Зберегти",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () => Navigator.of(context).pop(newValue),
+          )
+        ],
+      ),
+    );
+
+    // update the field in the database
+
+    if (newValue.trim().isNotEmpty) {
+      await usersCollection.doc(currentUser?.email).update({field: newValue});
+    }
+  }
 
   void signUserOut() {
     FirebaseAuth.instance.signOut();
@@ -27,13 +83,13 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
           ],
-          title: const Text("ProfilePage"),
+          title: Text("Мій профіль", style: TextStyle(color: Colors.grey[300])),
           backgroundColor: Colors.grey[900],
         ),
         body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("Users")
-                .doc(currentUser?.uid)
+                .doc(currentUser?.email)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -67,15 +123,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     //user details
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("My Details",
+                      child: Text("Мої дані",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
                     //username
 
                     MyTextBox(
-                      sectionName: userData["username"],
-                      text: "dfdsf",
+                      sectionName: "Ім'я користувача",
+                      text: userData["username"],
                       onPressed: () => editField("username"),
                     ),
 
@@ -86,8 +142,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     //bio
 
                     MyTextBox(
-                      sectionName: userData["bio"],
-                      text: "bio",
+                      sectionName: "Опис",
+                      text: userData["bio"],
                       onPressed: () => editField("bio"),
                     ),
 
@@ -95,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("My Posts",
+                      child: Text("Мої маршрути",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
@@ -106,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               } else if (snapshot.hasError) {
                 return Center(
-                  child: Text("Error${snapshot.error}"),
+                  child: Text("Помилка${snapshot.error}"),
                 );
               }
 
