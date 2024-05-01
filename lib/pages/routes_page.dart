@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:travely/pages/login_page.dart';
 import 'package:travely/pages/map_page.dart';
 
 class RoutesPage extends StatefulWidget {
@@ -12,12 +11,12 @@ class RoutesPage extends StatefulWidget {
 
 class _RoutesPageState extends State<RoutesPage> {
   final List<Map<String, String>> items = [
-    {'title': 'Çàãîëîâîê 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
-    {'title': 'Çàãîëîâîê 2', 'text': 'Òåêñò 2', 'image': 'lib/images/images-2.png'},
-    {'title': 'Çàãîëîâîê 3', 'text': 'Òåêñò 3', 'image': 'lib/images/images-2.png'},
-    {'title': 'Çàãîëîâîê 4', 'text': 'Òåêñò 4', 'image': 'lib/images/images-2.png'},
-    {'title': 'Çàãîëîâîê 5', 'text': 'Òåêñò 5', 'image': 'lib/images/images-2.png'},
-    {'title': 'Çàãîëîâîê 6', 'text': 'Òåêñò 6', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 2', 'text': '����� 2', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 3', 'text': '����� 3', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 4', 'text': '����� 4', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 5', 'text': '����� 5', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 6', 'text': '����� 6', 'image': 'lib/images/images-2.png'},
   ];
 
   @override

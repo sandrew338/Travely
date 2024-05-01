@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:travely/pages/nearby_places_screen.dart';
 
-class Filter extends StatelessWidget {
+class Filter extends StatefulWidget {
   const Filter({super.key});
 
+  @override
+  State<Filter> createState() => _FilterState();
+}
+
+class _FilterState extends State<Filter> {
+  double _currentSliderValue = 5;
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -35,20 +42,22 @@ class Filter extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SearchBar(
-                              leading: SvgPicture.asset("assets/images/location1.svg",height: 30,),
+                            leading: SvgPicture.asset(
+                              "assets/images/location1.svg",
+                              height: 30,
+                            ),
 
-                              trailing: <Widget>[
-                                Tooltip(
-                                    message: 'Enter origin location',
-                                    child: TextButton(
-                                      onPressed: () {},
-                                      child: const Text("map"),
-                                    )),
-                              ],
-                              hintText:"Enter origin location",
-                              //textStyle: MaterialStateProperty,
-                              ),
-                              
+                            trailing: <Widget>[
+                              Tooltip(
+                                  message: 'Enter origin location',
+                                  child: TextButton(
+                                    onPressed: () {},
+                                    child: const Text("map"),
+                                  )),
+                            ],
+                            hintText: "Enter origin location",
+                            //textStyle: MaterialStateProperty,
+                          ),
                         ],
                       ),
                     ),
@@ -59,7 +68,10 @@ class Filter extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SearchBar(
-                              leading: SvgPicture.asset("assets/images/right_arrow.svg",height: 30,),
+                              leading: SvgPicture.asset(
+                                "assets/images/right_arrow.svg",
+                                height: 30,
+                              ),
                               trailing: <Widget>[
                                 Tooltip(
                                     message: '123',
@@ -73,55 +85,34 @@ class Filter extends StatelessWidget {
                     ),
                     const SizedBox(height: 16.0),
                     const Text('Mileage'),
-                    const SizedBox(height: 8.0),
-                    const Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              labelText: 'from',
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 8.0),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              labelText: 'km',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_left),
-                          onPressed: () {
-                            // Handle left arrow button press
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_right),
-                          onPressed: () {
-                            // Handle right arrow button press
-                          },
-                        ),
-                      ],
+                    // �������� �� �����
+                    Slider(
+                      value: _currentSliderValue,
+                      max: 100,
+                      divisions: 5,
+                      label: _currentSliderValue.round().toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _currentSliderValue = value;
+                        });
+                      },
                     ),
+
                     const SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // Handle OK button press
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return const NearByPlacesScreen();
+                            }));
                           },
                           child: const Text('OK'),
                         ),
-                        const SizedBox(width: 8.0),
+                        const SizedBox(width: 70.0),
                         ElevatedButton(
                           onPressed: () {
                             // Handle CANCEL button press
