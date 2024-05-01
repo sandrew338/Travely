@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MyTextBox extends StatelessWidget {
-  const MyTextBox({super.key});
+  final String text;
+  final String sectionName;
+  final void Function()? onPressed;
+  const MyTextBox({
+    super.key,
+    required this.sectionName,
+    required this.text,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

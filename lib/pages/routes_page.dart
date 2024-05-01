@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travely/pages/map_page.dart';
 
 class RoutesPage extends StatefulWidget {
-  const RoutesPage({Key? key}) : super(key: key);
+  const RoutesPage({Key? key});
 
   @override
   State<RoutesPage> createState() => _RoutesPageState();

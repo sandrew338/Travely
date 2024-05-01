@@ -15,10 +15,10 @@ class NearByPlacesScreen extends StatefulWidget {
 class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
 
   String apiKey = "AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE";
-  String radius = "5";
+  String radius = "100";
   double latitude = 49.8401193;
   double longitude = 24.0245918;
-
+  String  PLACES_API_KEY = 'AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE';
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
 
   @override
@@ -40,7 +40,7 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
 
             if(nearbyPlacesResponse.results != null)
               for(int i = 0 ; i < nearbyPlacesResponse.results!.length; i++)
-                nearbyPlacesWidget(nearbyPlacesResponse.results![i])
+                  nearbyPlacesWidget(nearbyPlacesResponse.results![i])
           ],
         ),
       ),
@@ -60,7 +60,14 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
     setState(() {});
 
   }
-
+// Image getImage(photoReference) {
+//     final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
+//     final maxWidth = "400";
+//     final maxHeight = "200";
+//     final url = "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$PLACES_API_KEY";
+//     return Image.network(url);
+//   }
+  
   Widget nearbyPlacesWidget(Results results) {
 
     return Container(
@@ -73,9 +80,29 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
           Text("Name: " + results.name!),
           Text("Location: " + results.geometry!.location!.lat.toString() + " , " + results.geometry!.location!.lng.toString()),
           Text(results.openingHours != null ? "Open" : "Closed"),
+          ListView.builder(
+        itemCount: results.photos!.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ListTile(
+              leading: Image.network(
+                results.photos![index] as String,
+                width: 100, // Adjust width as needed
+                height: 100, // Adjust height as needed
+                fit: BoxFit.cover,
+              ),
+              title: Text('Photo ${index + 1}'),
+              // You can add more details here like photo captions, etc.
+            ),
+          );
+        },
+      ),
         ],
+        
       ),
     );
+    
 
   }
 }
