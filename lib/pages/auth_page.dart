@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:travely/pages/login_page.dart';
+import 'package:travely/pages/login_or_register_page.dart';
 import 'package:travely/pages/navigator_bar.dart';
 
 class AuthPage extends StatelessWidget {
@@ -15,7 +15,7 @@ class AuthPage extends StatelessWidget {
           if (snapshot.hasData) {
             return const NavigatorBar();
           } else {
-            return LoginPage();
+            return const LoginOrRegister();
           }
         },
       ),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:travely/pages/map_page.dart';
 import 'package:travely/pages/routes_page.dart';
-import 'package:travely/pages/saved_page.dart';
 import 'package:travely/pages/calendar_page.dart';
 import 'package:travely/pages/profile_page.dart';
 
@@ -20,9 +19,8 @@ class _NavigatorBarState extends State<NavigatorBar> {
   final List<Widget> _screens = [
     const MapPage(),
     const RoutesPage(),
-    const SavedPage(),
     const CalendarPage(),
-    ProfilePage()
+    const ProfilePage()
   ];
   int _selectedIndex = 0;
 
@@ -59,15 +57,12 @@ class _NavigatorBarState extends State<NavigatorBar> {
                 ? "assets/images/selected/map_marker.svg"
                 : "assets/images/unselected/map_marker.svg"),
             BotNavItem(_selectedIndex == 1
-                ? "assets/images/selected/bookmark.svg"
-                : "assets/images/unselected/bookmark.svg"),
-            BotNavItem(_selectedIndex == 2
                 ? "assets/images/selected/fire_flame_curved.svg"
                 : "assets/images/unselected/fire_flame_curved.svg"),
-            BotNavItem(_selectedIndex == 3
+            BotNavItem(_selectedIndex == 2
                 ? "assets/images/selected/time_past.svg"
                 : "assets/images/unselected/time_past.svg"),
-            BotNavItem(_selectedIndex == 4
+            BotNavItem(_selectedIndex == 3
                 ? "assets/images/selected/circle_user.svg"
                 : "assets/images/unselected/circle_user.svg")
           ]),

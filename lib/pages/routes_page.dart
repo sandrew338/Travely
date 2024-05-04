@@ -1,9 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:travely/pages/login_page.dart';
 import 'package:travely/pages/map_page.dart';
 
 class RoutesPage extends StatefulWidget {
-  const RoutesPage({Key? key}) : super(key: key);
+  const RoutesPage({Key? key});
 
   @override
   State<RoutesPage> createState() => _RoutesPageState();
@@ -11,12 +12,12 @@ class RoutesPage extends StatefulWidget {
 
 class _RoutesPageState extends State<RoutesPage> {
   final List<Map<String, String>> items = [
-    {'title': 'Заголовок 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 2', 'text': 'Текст 2', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 3', 'text': 'Текст 3', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 4', 'text': 'Текст 4', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 5', 'text': 'Текст 5', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 6', 'text': 'Текст 6', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 2', 'text': '����� 2', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 3', 'text': '����� 3', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 4', 'text': '����� 4', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 5', 'text': '����� 5', 'image': 'lib/images/images-2.png'},
+    {'title': '��������� 6', 'text': '����� 6', 'image': 'lib/images/images-2.png'},
   ];
 
   @override
@@ -86,7 +87,7 @@ class _RoutesPageState extends State<RoutesPage> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           GestureDetector(
-                                            onTap: () {
+onTap: () {
                                               Navigator.push(
                                                 context, 
                                                 MaterialPageRoute(
@@ -152,38 +153,3 @@ class _RoutesPageState extends State<RoutesPage> {
     );
   }
 }
-
-
-
-  
-//   List routesList = [4];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         backgroundColor: const Color.fromARGB(255, 195, 226, 251),
-//         appBar: AppBar( 
-//           title: const Text("RoutesPage"),
-//           centerTitle: true,
-//         ),
-//         body: ListView.builder(
-//             itemCount: routesList.length,
-//             itemBuilder: (BuildContext context, int index) {
-//               return GestureDetector(
-//                 onTap: () {
-                  
-//                 }, // Image tapped
-//                 child: Image.asset(
-//                   "lib/images/images-2.png",
-//                   fit: BoxFit.cover, // Fixes border issues
-//                   width: 110.0,
-//                   height: 110.0,
-//                 ),
-
-//                 //child: Row(
-//                 //  children: [Image.asset(name)],
-//                 //),
-//               );
-//             }));
-//   }
-// }

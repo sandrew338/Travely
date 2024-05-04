@@ -1,4 +1,3 @@
-
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,23 +6,25 @@ import 'package:travely/components/my_button.dart';
 import 'package:travely/components/my_textfield.dart';
 import 'package:travely/components/square_tile.dart';
 import 'package:travely/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
 //text editing controller
   final emailController = TextEditingController();
 
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
 //sign user in method
-  void signUserIn() async {
+  void signUserUp() async {
     //show loading circle
     showDialog(
         context: context,
@@ -32,19 +33,39 @@ class _LoginPageState extends State<LoginPage> {
             child: CircularProgressIndicator(),
           );
         });
-    //try sign in
+    //try signup
+
+    if (passwordController.text != confirmPasswordController.text) {
+      Navigator.pop(context);
+      showErrorMessage("Password don't match!");
+      return;
+    }
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      Navigator.pop(context);
+
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(userCredential.user!.email)
+          .set({
+        "username": emailController.text.split("@")[0],
+        "bio": "Empty bio"
+      });
+
+      if (context.mounted) Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      showErrorImage(e.code);
+      showErrorMessage(e.code);
     }
   }
-  void showErrorImage(String message) {
+
+  //try creating the user
+
+  void showErrorMessage(String message) {
     showDialog(
         context: context,
         builder: (context) {
@@ -53,11 +74,12 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
 
-        /*
+    /*
         if (e.code == "user-not-found") {
         print("No user found");
         wrongEmailMessage();
-      } else if (e.code == 'wrong-found') {
+      } else if (e.code == "wrong-found") {
+        print("Wrong password buddy");
         wrongPasswordMessage();
       }*/
   }
@@ -74,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //logo
                     const Icon(
@@ -83,10 +105,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //welcome back
-                    const Text("Привіт, тебе давно не було!",
+                    const Text("Реєстрація!",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -99,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     MyTextField(
                       controller: emailController,
-                      hintText: "Ім'я користувача",
+                      hintText: "Email",
                       obscureText: false,
                     ),
 
@@ -114,30 +136,25 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(
-                      height: 10,
+                      height: 25,
                     ),
-                    //forgot password?
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Забули пароль?",
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
+                    //password textfield
+                    MyTextField(
+                      controller: confirmPasswordController,
+                      hintText: "Підтвердження паролю",
+                      obscureText: true,
                     ),
 
+                    const SizedBox(
+                      height: 10,
+                    ),
                     const SizedBox(
                       height: 25,
                     ),
                     //sign in button
                     MyButton(
-                      onTap: signUserIn,
-                      text: "Увійти",
+                      onTap: signUserUp,
+                      text: "Зареєструватися",
                     ),
 
                     const SizedBox(
@@ -156,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              "Або увійди через",
+                              "Або зареєструватись через",
                               style: TextStyle(color: Colors.grey[700]),
                             ),
                           ),
@@ -178,15 +195,14 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SquareTile(
-                          onTap:()=>AuthService().signInWithGoogle(),
-                          imagePath: "lib/images/google.png"),
+                            onTap: () => AuthService().signInWithGoogle(),
+                            imagePath: "lib/images/google.png"),
                         const SizedBox(
                           width: 25,
                         ),
-
                         SquareTile(
-                          onTap:()=>{},
-                          imagePath: "lib/images/apple.png")
+                            onTap: () => AuthService().signInWithGoogle(),
+                            imagePath: "lib/images/apple.png")
                       ],
                     ),
 
@@ -198,9 +214,8 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-
                         Text(
-                          "Ще не зареєстровані?",
+                          "Вже зареєстровані?",
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                         const SizedBox(
@@ -209,9 +224,10 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: widget.onTap,
                           child: const Text(
-                            "Зареєструватись зараз!",
+                            "Увійти зараз!",
                             style: TextStyle(
-                                color: Colors.blue, fontWeight: FontWeight.bold),
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
                           ),
                         )
                       ],
