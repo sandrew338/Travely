@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:google_maps/google_maps.dart';
-
+import 'package:travely/components/filter_search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:travely/components/filter.dart';
+
 //import 'dart:ui' as ui;
 //import 'dart:html';
 
@@ -58,7 +57,7 @@ class _MapPageState extends State<MapPage> {
                           hintText: "Search..."),
                     ),
                   ),
-                  const Filter(),
+                  const FilterSearch(),
                   const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(

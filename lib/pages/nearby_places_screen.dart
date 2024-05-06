@@ -47,10 +47,24 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
   }
 
   void getNearbyPlaces() async {
-
-    var url = Uri.parse('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude.toString() + ','
-    + longitude.toString() + '&radius=' + radius + '&key=' + PLACES_API_KEY
-    );
+    latitude += 0.01;
+    longitude += 0.01;
+    int minimumReviewCount = 500;
+    List<String> placeTypes = (["restaurant", "church", "park", "museum", "cafe", "gym", "store", "point_of_interest", "establishment"]);
+    String typesParameter = placeTypes.join('|');
+    var url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+          latitude.toString() +
+          ',' +
+          longitude.toString() +
+          '&radius=' +
+          radius +
+          '&types=' + 
+          typesParameter + 
+          '&key=' +
+          PLACES_API_KEY +
+          '&minumum_review_count=' +
+          minimumReviewCount.toString());
 
     var response = await http.post(url);
 

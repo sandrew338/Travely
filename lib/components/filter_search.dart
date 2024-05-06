@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:travely/pages/nearby_places_screen.dart';
 
-class Filter extends StatefulWidget {
-  const Filter({super.key});
+class FilterSearch extends StatefulWidget {
+  const FilterSearch({super.key});
 
   @override
-  State<Filter> createState() => _FilterState();
+  State<FilterSearch> createState() => _FilterSearchState();
 }
 
-class _FilterState extends State<Filter> {
+class _FilterSearchState extends State<FilterSearch> {
   double _currentSliderValue = 5;
   @override
   Widget build(BuildContext context) {
