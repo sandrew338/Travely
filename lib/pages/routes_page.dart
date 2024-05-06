@@ -11,12 +11,12 @@ class RoutesPage extends StatefulWidget {
 
 class _RoutesPageState extends State<RoutesPage> {
   final List<Map<String, String>> items = [
-    {'title': 'Заголовок 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 2', 'text': 'Текст 2', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 3', 'text': 'Текст 3', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 4', 'text': 'Текст 4', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 5', 'text': 'Текст 5', 'image': 'lib/images/images-2.png'},
-    {'title': 'Заголовок 6', 'text': 'Текст 6', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 2', 'text': 'пїЅпїЅпїЅпїЅпїЅ 2', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 3', 'text': 'пїЅпїЅпїЅпїЅпїЅ 3', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 4', 'text': 'пїЅпїЅпїЅпїЅпїЅ 4', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 5', 'text': 'пїЅпїЅпїЅпїЅпїЅ 5', 'image': 'lib/images/images-2.png'},
+    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 6', 'text': 'пїЅпїЅпїЅпїЅпїЅ 6', 'image': 'lib/images/images-2.png'},
   ];
 
   @override
