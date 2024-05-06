@@ -3,12 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:travely/components/filter_search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-<<<<<<< HEAD
-=======
 import 'package:location/location.dart';
 
 //import 'package:google_maps/google_maps.dart';
->>>>>>> Bohdan_branch
 
 //import 'dart:ui' as ui;
 //import 'dart:html';

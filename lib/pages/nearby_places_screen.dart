@@ -16,13 +16,6 @@ class NearByPlacesScreen extends StatefulWidget {
 }
 
 class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
-<<<<<<< HEAD
-
-  String radius = "100";
-  double latitude = 49.8401193;
-  double longitude = 24.0245918;
-  String  PLACES_API_KEY = 'AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE';
-=======
   String locationMessage = '';
   String apiKey = "AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE";
   String radius = "1000";
@@ -32,7 +25,6 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
   double longitude = 24.0245918;
   late String lat;
   late String long;
->>>>>>> Bohdan_branch
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
 
   Future<Position> _getCurrentLocation() async{
@@ -73,13 +65,6 @@ void _liveLocation() {
             locationMessage = 'Latitude: $lat, Longitude: $long';
           });
 
-<<<<<<< HEAD
-            if(nearbyPlacesResponse.results != null)
-              for(int i = 0 ; i < nearbyPlacesResponse.results!.length; i++)
-                  nearbyPlacesWidget(nearbyPlacesResponse.results![i])
-          ],
-        ),
-=======
         });
 }
 
@@ -120,25 +105,16 @@ Widget build(BuildContext context) {
             for(int i = 0 ; i < nearbyPlacesResponse.results!.length; i++)
               nearbyPlacesWidget(nearbyPlacesResponse.results![i])
         ],
->>>>>>> Bohdan_branch
       ),
     ),
   );
 }
 
-<<<<<<< HEAD
-  void getNearbyPlaces() async {
-    latitude += 0.01;
-    longitude += 0.01;
-    int minimumReviewCount = 500;
-    List<String> placeTypes = (["restaurant", "church", "park", "museum", "cafe", "gym", "store", "point_of_interest", "establishment"]);
-=======
 
 void getNearbyPlaces() async {
     latitude += 0.01;
     longitude += 0.01;
     List<String> placeTypes = (["restaurant", "church", "park", "museum", "cafe", "gym", "store"]);
->>>>>>> Bohdan_branch
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
       'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
@@ -150,13 +126,7 @@ void getNearbyPlaces() async {
           '&types=' + 
           typesParameter + 
           '&key=' +
-<<<<<<< HEAD
-          PLACES_API_KEY +
-          '&minumum_review_count=' +
-          minimumReviewCount.toString());
-=======
           apiKey);
->>>>>>> Bohdan_branch
 
     var response = await http.post(url);
 
@@ -165,26 +135,15 @@ void getNearbyPlaces() async {
     setState(() {});
 
   }
-<<<<<<< HEAD
-// Image getImage(photoReference) {
-//     final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
-//     final maxWidth = "400";
-//     final maxHeight = "200";
-//     final url = "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$PLACES_API_KEY";
-//     return Image.network(url);
-//   }
-  
-=======
 
   String getImageUrl(String photoReference) {
   final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
-  final maxWidth = "400";
-  final maxHeight = "200";
+  final maxWidth = "800";
+  final maxHeight = "400";
   final url =
       "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$apiKey";
   return url;
 }
->>>>>>> Bohdan_branch
   Widget nearbyPlacesWidget(Results results) {
   return Container(
     width: MediaQuery.of(context).size.width,
@@ -229,17 +188,4 @@ void getNearbyPlaces() async {
     ),
   );
 }
-<<<<<<< HEAD
-
-// Method to construct the URL for fetching photos
-String getImageUrl(String photoReference) {
-  final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
-  final maxWidth = "400";
-  final maxHeight = "200";
-  final url =
-      "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$PLACES_API_KEY";
-  return url;
-}
-=======
->>>>>>> Bohdan_branch
 }
