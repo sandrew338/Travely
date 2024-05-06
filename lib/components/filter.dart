@@ -86,7 +86,7 @@ class _FilterState extends State<Filter> {
                     const SizedBox(height: 16.0),
                     const Text('Mileage'),
                     const SizedBox(height: 16.0),
-                    // повзунок на радіус
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                     Slider(
                       value: _currentSliderValue,
                       max: 100,

@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+
 //import 'package:google_maps/google_maps.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,20 +20,33 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-
-
 class _MapPageState extends State<MapPage> {
+  //final Completer<GoogleMapController> _controller = Completer();
   static const LatLng _pGooglePlex = LatLng(49.8401193, 24.0245918);
+  static const LatLng _pGooglePlex1 = LatLng(49.800000, 24.0200000);
   @override
-
+  
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: 
+      Stack(
         children: <Widget>[
           // Replace this container with your Map widget
-          const GoogleMap(
+          GoogleMap(
               initialCameraPosition:
-                  CameraPosition(target: _pGooglePlex, zoom: 16)),
+                  CameraPosition(target: _pGooglePlex, zoom: 14.5),
+              markers: {                
+                Marker(
+                  markerId: MarkerId("source"),
+                  position: _pGooglePlex
+                ),
+                Marker(
+                  markerId: MarkerId("destination"),
+                  position: _pGooglePlex1
+                ),
+
+              },    
+                  ),
           Positioned(
             top: 30,
             right: 15,
