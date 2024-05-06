@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_polyline_points: 2.0.0
+  geolocator: ^8.2.1
+  location: ^4.4.0
   google_maps_flutter: ^2.5.3
   google_maps_flutter_web: ^0.5.7
   flutter_svg: ^2.0.10+1
@@ -46,6 +49,7 @@ dependencies:
   cloud_firestore: ^4.17.2
   google_maps: ^7.1.0
   http: ^1.2.1
+  url_launcher: 6.1.2
 
 
 
