@@ -96,7 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //logo
                     const Icon(
@@ -105,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     const SizedBox(
-                      height: 50,
+                      height: 25,
                     ),
                     //welcome back
                     const Text("Реєстрація!",

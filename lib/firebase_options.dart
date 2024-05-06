@@ -5,9 +5,6 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-
-
-
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -79,4 +76,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'travely-d5c38.appspot.com',
     measurementId: 'G-0FJ58X0F2S',
   );
+
 }

@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_maps_flutter: ^2.5.3
+  google_maps_flutter_web: ^0.5.7
   flutter_svg: ^2.0.10+1
   table_calendar: ^3.0.9
   # The following adds the Cupertino Icons font to your application.
@@ -43,8 +44,21 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
   cloud_firestore: ^4.17.2
+  google_maps: ^7.1.0
+  http: ^1.2.1
+
+
+
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: "AppIcon"
+  image_path: "assets/images/Travelly.png"
+  remove_alpha_ios: true
+
   flutter_test:
     sdk: flutter
 
@@ -71,7 +85,8 @@ flutter:
     - lib/images/
     - assets/images/selected/
     - assets/images/unselected/
-
+    - assets/images/images routes/
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
