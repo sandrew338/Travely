@@ -1,22 +1,79 @@
-
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:travely/pages/login_page.dart';
 import 'package:travely/pages/map_page.dart';
 
+class ImageCarousel extends StatefulWidget {
+  final List<String> images;
+
+  ImageCarousel({required this.images});
+
+  @override
+  _ImageCarouselState createState() => _ImageCarouselState();
+}
+
+class _ImageCarouselState extends State<ImageCarousel> {
+  late PageController _controller;
+  int _currentPage = 0;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController(initialPage: _currentPage);
+    _timer = Timer.periodic(Duration(seconds: 4), (Timer timer) {
+      if (_currentPage < widget.images.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _controller.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 350),
+        curve: Curves.easeIn,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _controller,
+      itemCount: widget.images.length,
+      itemBuilder: (context, index) {
+        return Image.asset(widget.images[index]);
+      },
+    );
+  }
+}
+
 class RoutesPage extends StatefulWidget {
-  const RoutesPage({Key? key});
+  const RoutesPage({Key? key}) : super(key: key);
 
   @override
   State<RoutesPage> createState() => _RoutesPageState();
 }
 
 class _RoutesPageState extends State<RoutesPage> {
-  final List<Map<String, String>> items = [
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1', 'text': 'Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ', 'image': 'lib/images/images-2.png'},
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 2', 'text': 'пїЅпїЅпїЅпїЅпїЅ 2', 'image': 'lib/images/images-2.png'},
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 3', 'text': 'пїЅпїЅпїЅпїЅпїЅ 3', 'image': 'lib/images/images-2.png'},
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 4', 'text': 'пїЅпїЅпїЅпїЅпїЅ 4', 'image': 'lib/images/images-2.png'},
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 5', 'text': 'пїЅпїЅпїЅпїЅпїЅ 5', 'image': 'lib/images/images-2.png'},
-    {'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 6', 'text': 'пїЅпїЅпїЅпїЅпїЅ 6', 'image': 'lib/images/images-2.png'},
+  final List<Map<String, dynamic>> items = [
+    {
+      'title': 'Заголовок 1',
+      'text': 'Текст 1',
+      'images': [
+        'lib/images/images-1.png',
+        'lib/images/images-2.png',
+        'lib/images/images-3.png'
+      ]
+    },
+    // інші елементи...
   ];
 
   @override
@@ -33,7 +90,7 @@ class _RoutesPageState extends State<RoutesPage> {
         padding: const EdgeInsets.all(4.0),
         mainAxisSpacing: 4.0,
         crossAxisSpacing: 4.0,
-        children: items.map((Map<String, String> item) {
+        children: items.map((Map<String, dynamic> item) {
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -49,19 +106,7 @@ class _RoutesPageState extends State<RoutesPage> {
               child: Stack(
                 fit: StackFit.expand,
                 children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MapPage()),
-                      );
-                    },
-                    child: Image.asset(
-                      item['image']!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  ImageCarousel(images: item['images']),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
@@ -86,22 +131,20 @@ class _RoutesPageState extends State<RoutesPage> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           GestureDetector(
-onTap: () {
+                                            onTap: () {
                                               Navigator.push(
-                                                context, 
+                                                context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => const MapPage()),
+                                                    builder: (context) =>
+                                                        const MapPage()),
                                               );
                                             },
-                                            child: Image.asset(
-                                              item['image']!,
-                                              width: 50,
-                                              height: 50,
-                                            ),
+                                            child: ImageCarousel(
+                                                images: item['images']),
                                           ),
                                           const SizedBox(height: 10),
                                           Text(
-                                            item['title']!,
+                                            item['title'],
                                             style: TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
@@ -112,7 +155,7 @@ onTap: () {
                                           Flexible(
                                             child: SingleChildScrollView(
                                               child: Text(
-                                                item['text']!,
+                                                item['text'],
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),
@@ -133,7 +176,7 @@ onTap: () {
                             );
                           },
                           child: Text(
-                            item['title']!,
+                            item['title'],
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,

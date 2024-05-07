@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                     //username
 
-MyTextBox(
+                    MyTextBox(
                       sectionName: "Ім'я користувача",
                       text: userData["username"],
                       onPressed: () => editField("username"),

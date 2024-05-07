@@ -138,8 +138,8 @@ void getNearbyPlaces() async {
 
   String getImageUrl(String photoReference) {
   final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
-  final maxWidth = "800";
-  final maxHeight = "400";
+  final maxWidth = "400";
+  final maxHeight = "200";
   final url =
       "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$apiKey";
   return url;
