@@ -561,8 +561,8 @@ class _FilterSearchState extends State<FilterSearch> {
                             hintText: 'Enter your location',
                             hintStyle: MaterialStateProperty.all(
                                 const TextStyle(
-                                    color: Color(0xFFA1A5C0), fontSize: 11)),
-                            constraints: const BoxConstraints(minHeight: 28),
+                                    color: Color(0xFF1C1C1C), fontSize: 16)),
+                            constraints: const BoxConstraints(minHeight: 48),
                             leading: SvgPicture.asset(
                               "assets/images/location1.svg",
                               height: 30,
@@ -572,33 +572,40 @@ class _FilterSearchState extends State<FilterSearch> {
                                 color: Color.fromRGBO(1, 1, 1, 0.1))),
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40))), trailing: [],
+                                    borderRadius: BorderRadius.circular(40))),
+                            trailing: [],
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 235, 238, 235)),
                           )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 4.0),
+                    const SizedBox(height: 8.0),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SearchBar(
+                            hintText: 'Destination (optional)',
+                            hintStyle: MaterialStateProperty.all(
+                                const TextStyle(
+                                    color: Color(0xFF1C1C1C), fontSize: 16)),
+                            constraints: const BoxConstraints(minHeight: 48),
                             leading: SvgPicture.asset(
                               "assets/images/right_arrow.svg",
                               height: 30,
                             ),
-                            trailing: <Widget>[
-                              Tooltip(
-                                message: '123',
-                                child: TextButton(
-                                  onPressed: () {},
-                                  child: const Text("Enter"),
-                                ),
-                              ),
-                            ],
-                            hintText: '234',
-                          ),
+                            elevation: const MaterialStatePropertyAll(0),
+                            side: MaterialStateProperty.all(const BorderSide(
+                                color: Color.fromRGBO(1, 1, 1, 0.1))),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40))),
+                            trailing: [],
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 235, 238, 235)),
+                          )
                         ],
                       ),
                     ),
