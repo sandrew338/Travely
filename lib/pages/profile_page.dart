@@ -12,7 +12,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   //user
-  final currentUser = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser!;
   //all users
   final usersCollection = FirebaseFirestore.instance.collection("Users");
 
@@ -20,7 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
     Map<String, String> fieldTranslations = {
       "username": "ім'я користувача",
       "bio": "опис",
-      // додайте інші поля та їх переклади тут
     };
 
     String translatedField = fieldTranslations[field] ?? field;
@@ -67,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // update the field in the database
 
     if (newValue.trim().isNotEmpty) {
-      await usersCollection.doc(currentUser?.email).update({field: newValue});
+      await usersCollection.doc(currentUser.email).update({field: newValue});
     }
   }
 
@@ -89,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
         body: StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("Users")
-                .doc(currentUser?.email)
+                .doc(currentUser.email)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -113,7 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
 
                     //user email
-                    Text(currentUser!.email!,
+                    Text(currentUser.email!,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey[700])),
 

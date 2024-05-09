@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travely/pages/map_page.dart';
 
 class RoutesPage extends StatefulWidget {
-  const RoutesPage({Key? key});
+  const RoutesPage({super.key, Key? customKey});
 
   @override
   State<RoutesPage> createState() => _RoutesPageState();
@@ -74,7 +74,7 @@ class _RoutesPageState extends State<RoutesPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return Dialog(
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 700,
                                     width: 400,
                                     child: Padding(
@@ -102,7 +102,7 @@ onTap: () {
                                           const SizedBox(height: 10),
                                           Text(
                                             item['title']!,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -134,7 +134,7 @@ onTap: () {
                           },
                           child: Text(
                             item['title']!,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,
                             ),

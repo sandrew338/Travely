@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,7 +8,7 @@ import 'package:travely/model/nearby_response.dart';
 //import 'package:url_launcher/url_launcher_string.dart';
 
 class NearByPlacesScreen extends StatefulWidget {
-  const NearByPlacesScreen({Key? key}) : super(key: key);
+  const NearByPlacesScreen({super.key});
 
   @override
   State<NearByPlacesScreen> createState() => _NearByPlacesScreenState();
@@ -117,16 +116,7 @@ void getNearbyPlaces() async {
     List<String> placeTypes = (["restaurant", "church", "park", "museum", "cafe", "gym", "store"]);
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-          latitude.toString() +
-          ',' +
-          longitude.toString() +
-          '&radius=' +
-          radius +
-          '&types=' + 
-          typesParameter + 
-          '&key=' +
-          apiKey);
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$apiKey');
 
     var response = await http.post(url);
 

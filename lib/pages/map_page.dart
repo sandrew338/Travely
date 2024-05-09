@@ -1,12 +1,9 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
 //import 'package:google_maps/google_maps.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/components/filter.dart';
 //import 'dart:ui' as ui;
 //import 'dart:html';
@@ -34,13 +31,13 @@ class _MapPageState extends State<MapPage> {
           // Replace this container with your Map widget
           GoogleMap(
               initialCameraPosition:
-                  CameraPosition(target: _pGooglePlex, zoom: 14.5),
+                  const CameraPosition(target: _pGooglePlex, zoom: 14.5),
               markers: {                
-                Marker(
+                const Marker(
                   markerId: MarkerId("source"),
                   position: _pGooglePlex
                 ),
-                Marker(
+                const Marker(
                   markerId: MarkerId("destination"),
                   position: _pGooglePlex1
                 ),

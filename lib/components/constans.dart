@@ -1,3 +1,2 @@
-import 'package:flutter/material.dart';
 
-const String google_api_key = "AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE";
+const String googleApiKey = "AIzaSyCTa7obRMkWaWr7Ma4wlAEPieccmHIFZNE";
