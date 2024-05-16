@@ -30,14 +30,14 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text(
-          "Редагувати $translatedField",
+          "���������� $translatedField",
           style: const TextStyle(color: Colors.white),
         ),
         content: TextField(
           autofocus: true,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: "Введіть $translatedField",
+            hintText: "������ $translatedField",
             hintStyle: const TextStyle(color: Colors.grey),
           ),
           onChanged: (value) {
@@ -47,14 +47,14 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           TextButton(
             child: const Text(
-              "Відмінити",
+              "³������",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             child: const Text(
-              "Зберегти",
+              "��������",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.of(context).pop(newValue),
@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
           ],
-          title: Text("Мій профіль", style: TextStyle(color: Colors.grey[300])),
+          title: Text("̳� �������", style: TextStyle(color: Colors.grey[300])),
           backgroundColor: Colors.grey[900],
         ),
         body: StreamBuilder<DocumentSnapshot>(
@@ -122,14 +122,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     //user details
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Мої дані",
+                      child: Text("�� ����",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
                     //username
 
                     MyTextBox(
-                      sectionName: "Ім'я користувача",
+                      sectionName: "��'� �����������",
                       text: userData["username"],
                       onPressed: () => editField("username"),
                     ),
@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     //bio
 
                     MyTextBox(
-                      sectionName: "Опис",
+                      sectionName: "����",
                       text: userData["bio"],
                       onPressed: () => editField("bio"),
                     ),
@@ -150,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Мої маршрути",
+                      child: Text("�� ��������",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               } else if (snapshot.hasError) {
                 return Center(
-                  child: Text("Помилка${snapshot.error}"),
+                  child: Text("�������${snapshot.error}"),
                 );
               }
 
