@@ -141,7 +141,7 @@ import 'package:travely/pages/nearby_places_screen.dart';
 class FilterSearch extends StatefulWidget {
   final VoidCallback onFilterPressed; // Callback function
 
-  const FilterSearch({Key? key, required this.onFilterPressed}) : super(key: key);
+  const FilterSearch({super.key, required this.onFilterPressed});
 
   @override
   State<FilterSearch> createState() => _FilterSearchState();

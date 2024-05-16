@@ -238,14 +238,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/model/nearby_response.dart';
 
 class NearByPlacesScreen extends StatefulWidget {
-  const NearByPlacesScreen({Key? key}) : super(key: key);
+  const NearByPlacesScreen({super.key});
 
   @override
   State<NearByPlacesScreen> createState() => _NearByPlacesScreenState();
 }
 
 class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
-  late GoogleMapController _controller;
   String apiKey = "AIzaSyBiGQanFXhjlQ5QLTqjrr7OTit6l4W5ZbA";
   double latitude = 49.8401193;
   double longitude = 24.0245918;
@@ -262,7 +261,6 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
       ),
       body: GoogleMap(
         onMapCreated: (controller) {
-          _controller = controller;
         },
         initialCameraPosition: CameraPosition(
           target: LatLng(latitude, longitude),
@@ -273,7 +271,7 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: getNearbyPlaces,
-        child: Icon(Icons.place),
+        child: const Icon(Icons.place),
       ),
     );
   }
@@ -284,7 +282,7 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
 
     // Generate 10 points evenly spaced around a circle
     List<LatLng> points =
-        generateCircularPoints(10, LatLng(49.8401193, 24.0245918), 0.005);
+        generateCircularPoints(10, const LatLng(49.8401193, 24.0245918), 0.005);
 
     for (var point in points) {
       markers.add(Marker(
@@ -312,7 +310,7 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
     List<LatLng> excursionRoad = await _findExcursionRoad(points);
     setState(() {
       polylines.add(Polyline(
-        polylineId: PolylineId('excursionRoad'),
+        polylineId: const PolylineId('excursionRoad'),
         points: excursionRoad,
         color: Colors.blue,
         width: 5,

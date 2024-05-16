@@ -12,9 +12,9 @@ class FilterSearch extends StatefulWidget {
   final VoidCallback onFilterPressed; // Callback function
 
   const FilterSearch({
-    Key? key,
+    super.key,
     required this.onFilterPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterSearch> createState() => _FilterSearchState();
@@ -68,9 +68,9 @@ class _FilterSearchState extends State<FilterSearch> {
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(40))),
-                            trailing: [],
+                            trailing: const [],
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 235, 238, 235)),
+                                const Color.fromARGB(255, 235, 238, 235)),
                           )
                         ],
                       ),
@@ -97,9 +97,9 @@ class _FilterSearchState extends State<FilterSearch> {
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(40))),
-                            trailing: [],
+                            trailing: const [],
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 235, 238, 235)),
+                                const Color.fromARGB(255, 235, 238, 235)),
                           )
                         ],
                       ),
@@ -157,8 +157,7 @@ class _FilterSearchState extends State<FilterSearch> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        _currentSliderValue.toStringAsFixed(1) +
-                                            ' km',
+                                        '${_currentSliderValue.toStringAsFixed(1)} km',
                                         textAlign: TextAlign.right,
                                       ),
                                     ),
@@ -217,7 +216,7 @@ class _FilterSearchState extends State<FilterSearch> {
 }
 
 class MapPage extends StatefulWidget {
-  const MapPage({Key? key}) : super(key: key);
+  const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -305,16 +304,7 @@ class _MapPageState extends State<MapPage> {
         (["restaurant", "church", "park", "museum", "cafe", "gym", "store"]);
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            latitude.toString() +
-            ',' +
-            longitude.toString() +
-            '&radius=' +
-            radius +
-            '&types=' +
-            typesParameter +
-            '&key=' +
-            apiKey);
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$apiKey');
 
     var response = await http.post(url);
 
@@ -352,7 +342,7 @@ class _MapPageState extends State<MapPage> {
     List<LatLng> excursionRoad = await _findExcursionRoad(points);
     setState(() {
       polylines.add(Polyline(
-        polylineId: PolylineId('excursionRoad'),
+        polylineId: const PolylineId('excursionRoad'),
         points: excursionRoad,
         color: Colors.blue,
         width: 5,
