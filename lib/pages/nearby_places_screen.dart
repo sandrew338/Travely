@@ -125,44 +125,57 @@ void getNearbyPlaces() async {
     setState(() {});
 
   }
-// Image getImage(photoReference) {
-//     final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
-//     final maxWidth = "400";
-//     final maxHeight = "200";
-//     final url = "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$PLACES_API_KEY";
-//     return Image.network(url);
-//   }
-  
-  Widget nearbyPlacesWidget(Results results) {
 
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.only(top: 10,left: 10,right: 10),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(border: Border.all(color: Colors.black),borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        children: [
-          Text("Name: ${results.name}"),
-        Text("Location: ${results.geometry?.location?.lat}, ${results.geometry?.location?.lng}"),
-        Text("Icon: ${results.icon}"),
-        Text("Icon Background Color: ${results.iconBackgroundColor}"),
-        Text("Icon Mask Base Uri: ${results.iconMaskBaseUri}"),
+  String getImageUrl(String photoReference) {
+  final baseUrl = "https://maps.googleapis.com/maps/api/place/photo";
+  final maxWidth = "400";
+  final maxHeight = "200";
+  final url =
+      "$baseUrl?maxwidth=$maxWidth&maxheight=$maxHeight&photoreference=$photoReference&key=$apiKey";
+  return url;
+}
+  Widget nearbyPlacesWidget(Results results) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+    margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+    padding: const EdgeInsets.all(5),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.black),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Name: " + results.name!),
+        Text("Location: " +
+            results.geometry!.location!.lat.toString() +
+            " , " +
+            results.geometry!.location!.lng.toString()),
+        Text(results.openingHours != null ? "Open" : "Closed"),
+        SizedBox(height: 10),
+        // Displaying photos if available
         if (results.photos != null)
-          Text("Photos: ${results.photos!.map((photo) => photo.photoReference).join(", ")}"),
-        Text("Place ID: ${results.placeId}"),
-        Text("Reference: ${results.reference}"),
-        Text("Scope: ${results.scope}"),
-        Text("Types: ${results.types?.join(", ")}"),
-        Text("Vicinity: ${results.vicinity}"),
-        Text("Business Status: ${results.businessStatus}"),
-        if (results.openingHours != null)
-          Text("Opening Hours: Open Now - ${results.openingHours!.openNow}"),
-        if (results.plusCode != null)
-          Text("Plus Code: Compound Code - ${results.plusCode!.compoundCode}, Global Code - ${results.plusCode!.globalCode}"),
-        Text("Rating: ${results.rating}"),
-        Text("User Ratings Total: ${results.userRatingsTotal}"),
-        ],
-      ),
-    );
-  }
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: results.photos!.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: SizedBox(
+                    width: 100,
+                    child: Image.network(
+                      getImageUrl(results.photos![index].photoReference!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+      ],
+    ),
+  );
+}
 }
