@@ -1,243 +1,229 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/components/constans.dart';
 import 'package:travely/model/nearby_response.dart';
 import 'package:flutter_svg/svg.dart';
-
 class FilterSearch extends StatefulWidget {
-  final VoidCallback onFilterPressed; // Callback function
+  final Function(List<String>, double) onFilterChanged;
 
-  const FilterSearch({
-    super.key,
-    required this.onFilterPressed,
-  });
+  const FilterSearch({Key? key, required this.onFilterChanged}) : super(key: key);
 
   @override
-  State<FilterSearch> createState() => _FilterSearchState();
+  _FilterSearchState createState() => _FilterSearchState();
 }
 
 class _FilterSearchState extends State<FilterSearch> {
-  double _currentSliderValue = 3;
+  double _currentSliderValue = 1.5;
+  Map<String, bool> _filters = {
+    "art gallery": false,
+    "museum": false,
+    "store": false,
+    "church": false,
+    "cafe": false,
+    "zoo": false,
+    "park": false,
+    "gym": false,
+    "aquarium": false,
+  };
+
+  void _applyFilters() {
+    List<String> selectedFilters = _filters.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      splashColor: Colors.grey,
-      icon: SvgPicture.asset(
-        "assets/images/filter.svg",
-        height: 30,
-      ),
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              insetPadding: const EdgeInsets.all(10),
-              child: Container(
-                height: 520,
-                width: 300,
-                padding: const EdgeInsets.all(8.0),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                    color: Colors.white),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: const Color.fromARGB(255, 235, 238, 235),
+              labelText: 'Enter your location',
+              labelStyle: const TextStyle(color: Color(0xFF1C1C1C)),
+              prefixIcon: SvgPicture.asset(
+                "assets/images/location1.svg",
+                height: 30,
+                fit: BoxFit.scaleDown,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(40),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: const Color.fromARGB(255, 235, 238, 235),
+              labelText: 'Destination (optional)',
+              labelStyle: const TextStyle(color: Color(0xFF1C1C1C)),
+              prefixIcon: SvgPicture.asset(
+                "assets/images/right_arrow.svg",
+                height: 30,
+                fit: BoxFit.scaleDown,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(40),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Center(
+            child: Text(
+              'Radius',
+              style: TextStyle(
+                fontFamily: 'Kanit',
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF1C1C1C),
+                height: 1.495,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          StatefulBuilder(
+            builder: (context, state) => Column(
+              children: [
+                Slider(
+                  value: _currentSliderValue,
+                  min: 0.0,
+                  max: 20.0,
+                  divisions: 40,
+                  activeColor: const Color(0xFF1C1C1C),
+                  label: "${_currentSliderValue.toStringAsFixed(1)} km",
+                  onChanged: (val) {
+                    state(() {
+                      _currentSliderValue = val;
+                    });
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SearchBar(
-                            hintText: 'Enter your location',
-                            hintStyle: MaterialStateProperty.all(
-                                const TextStyle(
-                                    color: Color(0xFF1C1C1C), fontSize: 16)),
-                            constraints: const BoxConstraints(minHeight: 48),
-                            leading: SvgPicture.asset(
-                              "assets/images/location1.svg",
-                              height: 30,
-                            ),
-                            elevation: const MaterialStatePropertyAll(0),
-                            side: MaterialStateProperty.all(const BorderSide(
-                                color: Color.fromRGBO(1, 1, 1, 0.1))),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40))),
-                            trailing: const [],
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color.fromARGB(255, 235, 238, 235)),
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SearchBar(
-                            hintText: 'Destination (optional)',
-                            hintStyle: MaterialStateProperty.all(
-                                const TextStyle(
-                                    color: Color(0xFF1C1C1C), fontSize: 16)),
-                            constraints: const BoxConstraints(minHeight: 48),
-                            leading: SvgPicture.asset(
-                              "assets/images/right_arrow.svg",
-                              height: 30,
-                            ),
-                            elevation: const MaterialStatePropertyAll(0),
-                            side: MaterialStateProperty.all(const BorderSide(
-                                color: Color.fromRGBO(1, 1, 1, 0.1))),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40))),
-                            trailing: const [],
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                const Color.fromARGB(255, 235, 238, 235)),
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    const Center(
+                    Expanded(
                       child: Text(
-                        'Radius',
-                        style: TextStyle(
-                          fontFamily: 'Kanit',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF1C1C1C),
-                          height:
-                              1.495, // Calculated line height (35.88px / 24px)
-                          // The textAlign property is not necessary for a centered text widget
-                        ),
+                        '${_currentSliderValue.toStringAsFixed(1)} km',
+                        textAlign: TextAlign.right,
                       ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    // Slider(
-                    //   value: _currentSliderValue,
-                    //   min: 0,
-                    //   max: 10,
-                    //   divisions: 100,
-                    //   label: _currentSliderValue.round.toString(),
-                    //   activeColor:Colors.amber,
-                    //   onChanged: (double value) {
-                    //     setState(() {
-                    //       _currentSliderValue = value;
-                    //     });
-                    //   },
-                    // ),
-
-                    Center(
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-
-                        children: [
-                          StatefulBuilder(
-                            builder: (context, state) => Column(
-                              children: [
-                                Slider(
-                                  value: _currentSliderValue,
-                                  min: 0.0,
-                                  max: 100.0,
-                                  onChanged: (val) {
-                                    state(() {
-                                      _currentSliderValue = val;
-                                    });
-                                  },
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        '${_currentSliderValue.toStringAsFixed(1)} km',
-                                        textAlign: TextAlign.right,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const Center(
-                      child: Text(
-                        'Select type',
-                        style: TextStyle(
-                          fontFamily: 'Kanit',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF1C1C1C),
-                          height:
-                              1.495, // Calculated line height (35.88px / 24px)
-                          // The textAlign property is not necessary for a centered text widget
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            widget.onFilterPressed();
-                          },
-                          child: const Text('OK'),
-                        ),
-                        const SizedBox(width: 70.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('CANCEL'),
-                        ),
-                      ],
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Center(
+            child: Text(
+              'Select type',
+              style: TextStyle(
+                fontFamily: 'Kanit',
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF1C1C1C),
+                height: 1.495,
               ),
-            );
-          },
-        );
-      },
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 4,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: _filters.keys.map((String key) {
+              return CheckboxListTile(
+                title: Text(key),
+                activeColor: const Color(0xFF1C1C1C),
+                checkColor: Colors.white,
+                value: _filters[key],
+                onChanged: (bool? value) {
+                  setState(() {
+                    _filters[key] = value!;
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _applyFilters();
+                  //widget.onFilterChanged([], 0.0);
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: const Color(0xFF1C1C1C),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text('OK'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  widget.onFilterChanged([], 0.0);
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text('CANCEL'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
-
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
-
 class _MapPageState extends State<MapPage> {
   late GoogleMapController _controller;
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
-  String radius = "1000";
-  String apiKey = google_api_key;
+  String apiKey = google_api_key; // Replace with your Google API key
   double latitude = 49.8401193;
   double longitude = 24.0245918;
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
 
+  List<String> selectedFilters = [];
+  double radius = 1000;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Map Search'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () => _openFilterModal(),
+          ),
+        ],
+      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
+            mapType: MapType.normal,
             onMapCreated: (controller) {
               _controller = controller;
             },
@@ -249,7 +235,7 @@ class _MapPageState extends State<MapPage> {
             polylines: polylines,
           ),
           Positioned(
-            top: 30,
+            top: 80,
             right: 15,
             left: 15,
             height: 55,
@@ -277,10 +263,6 @@ class _MapPageState extends State<MapPage> {
                       ),
                     ),
                   ),
-                  FilterSearch(
-                    // Pass callback function to FilterSearch
-                    onFilterPressed: getNearbyPlaces,
-                  ),
                   const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
@@ -297,14 +279,38 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  void _openFilterModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return FilterSearch(
+          onFilterChanged: (filters, newRadius) {
+            setState(() {
+              selectedFilters = filters;
+              radius = newRadius;
+            });
+            getNearbyPlaces();
+            Navigator.pop(context); // Close the modal
+          },
+        );
+      },
+    );
+  }
+
   Future<void> getresponse() async {
-    latitude += 0.01;
-    longitude += 0.01;
-    List<String> placeTypes =
-        (["restaurant", "church", "park", "museum", "cafe", "gym", "store"]);
+    List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$apiKey');
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            latitude.toString() +
+            ',' +
+            longitude.toString() +
+            '&radius=' +
+            radius.toString() +
+            '&types=' +
+            typesParameter +
+            '&key=' +
+            apiKey);
 
     var response = await http.post(url);
 
@@ -317,8 +323,8 @@ class _MapPageState extends State<MapPage> {
   void getNearbyPlaces() async {
     markers.clear();
     polylines.clear();
-    getresponse();
-    // Extracting points from nearbyPlacesResponse
+    await getresponse();
+
     List<LatLng> points = [];
     for (var result in nearbyPlacesResponse.results!) {
       double? lat = result.geometry?.location?.lat;
@@ -328,14 +334,15 @@ class _MapPageState extends State<MapPage> {
       }
     }
 
-    // Add markers for each point
-    for (var point in points) {
+    for (int i = 0; i < points.length; i++) {
+      LatLng point = points[i];
       markers.add(Marker(
         markerId: MarkerId(point.toString()),
         position: point,
+        infoWindow: InfoWindow(title: 'Point ${i + 1}'),
       ));
     }
-    drawExcursionRoad(points);
+    await drawExcursionRoad(points);
   }
 
   Future<void> drawExcursionRoad(List<LatLng> points) async {
@@ -355,7 +362,7 @@ class _MapPageState extends State<MapPage> {
     for (int i = 0; i < points.length; i++) {
       LatLng origin = points[i];
       LatLng destination =
-          points[(i + 1) % points.length]; // Connect back to the first point
+          points[(i + 1) % points.length];
       List<LatLng> segmentPoints = await _getDirections(origin, destination);
       excursionRoad.addAll(segmentPoints);
     }
@@ -364,7 +371,7 @@ class _MapPageState extends State<MapPage> {
 
   Future<List<LatLng>> _getDirections(LatLng origin, LatLng destination) async {
     String url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude}&mode=walking&key=$apiKey';
 
     var response = await http.get(Uri.parse(url));
 
@@ -411,48 +418,3 @@ class _MapPageState extends State<MapPage> {
     return points;
   }
 }
-/*
-class SearchBar extends StatelessWidget {
-  final String hintText;
-  final Widget leading;
-  final List<Widget> trailing;
-
-  const SearchBar({
-    Key? key,
-    required this.hintText,
-    required this.leading,
-    required this.trailing,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: Colors.grey[200],
-      ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: leading,
-          ),
-          Expanded(
-            child: TextField(
-              cursorColor: Colors.black,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.go,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                hintText: hintText,
-              ),
-            ),
-          ),
-          ...trailing,
-        ],
-      ),
-    );
-  }
-}
-*/
