@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:travely/pages/map_page.dart';
 import 'package:travely/pages/calendar_page.dart';
+
+import 'package:travely/pages/map_page.dart';
 import 'package:travely/pages/profile_page.dart';
 import 'package:travely/pages/routes_page.dart';
 
