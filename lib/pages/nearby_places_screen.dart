@@ -248,6 +248,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:travely/components/constans.dart';
 import 'package:travely/model/nearby_response.dart';
 
 class NearByPlacesScreen extends StatefulWidget {
@@ -259,7 +260,6 @@ class NearByPlacesScreen extends StatefulWidget {
 
 class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
   late GoogleMapController _controller;
-  String apiKey = "AIzaSyBiGQanFXhjlQ5QLTqjrr7OTit6l4W5ZbA";
   double latitude = 49.8401193;
   double longitude = 24.0245918;
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
@@ -344,7 +344,7 @@ class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
   }
 
   Future<List<LatLng>> _getDirections(LatLng origin, LatLng destination) async {
-    String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$apiKey';
+    String url = 'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$google_api_key';
 
     var response = await http.get(Uri.parse(url));
 

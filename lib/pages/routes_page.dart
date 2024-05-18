@@ -94,7 +94,7 @@ class _RoutesPageState extends State<RoutesPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const MapPage()),
+                MaterialPageRoute(builder: (context) =>  MapPage()),
               );
             },
             child: Card(
@@ -135,7 +135,7 @@ class _RoutesPageState extends State<RoutesPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const MapPage()),
+                                                         MapPage()),
                                               );
                                             },
                                             child: ImageCarousel(
