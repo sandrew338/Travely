@@ -1,0 +1,111 @@
+import 'dart:async'; // Add this import
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:travely/components/constans.dart';
+
+class AutocompleteScreen extends StatefulWidget {
+  final bool isLocation;
+  final String initialText;
+  final Function(String) onPlaceSelected;
+  const AutocompleteScreen({
+    Key? key,
+    required this.isLocation,
+    required this.initialText,
+    required this.onPlaceSelected,
+  }) : super(key: key);
+
+  @override
+  _AutocompleteScreenState createState() => _AutocompleteScreenState();
+}
+
+class _AutocompleteScreenState extends State<AutocompleteScreen> {
+  TextEditingController _controller = TextEditingController();
+  List<dynamic> _predictions = [];
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.initialText;
+    _controller.addListener(_onTextChanged);
+    _getSuggestions(widget.initialText);
+  }
+
+  void _onTextChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (_controller.text.isNotEmpty) {
+        _getSuggestions(_controller.text);
+      }
+    });
+  }
+
+  Future<void> _getSuggestions(String input) async {
+    String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request = '$baseURL?input=$input&key=$google_api_key';
+    var response = await http.get(Uri.parse(request));
+    if (response.statusCode == 200) {
+      setState(() {
+        _predictions = json.decode(response.body)['predictions'];
+      });
+    } else {
+      throw Exception('Failed to load predictions');
+    }
+  }
+
+  Future<void> _selectPrediction(String placeId) async {
+    String url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$google_api_key';
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var details = json.decode(response.body)['result'];
+      final description = details['name'];
+      widget.onPlaceSelected(description);
+      Navigator.pop(context);
+    } else {
+      throw Exception('Failed to load place details');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(widget.isLocation ? 'Search Location' : 'Search Destination'),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: widget.isLocation ? 'Search Location' : 'Search Destination',
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(color: Colors.white),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _predictions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_predictions[index]['description']),
+                  onTap: () {
+                    _selectPrediction(_predictions[index]['place_id']);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:travely/components/constans.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:travely/pages/autocomplete_page';
 
 class FilterSearch extends StatefulWidget {
   final Function(List<String>, double) onFilterChanged;
@@ -21,18 +23,11 @@ class FilterSearch extends StatefulWidget {
   _FilterSearchState createState() => _FilterSearchState();
 }
 
-
 class _FilterSearchState extends State<FilterSearch> {
   late double _currentSliderValue;
   late Map<String, bool> _filters;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
-  List<dynamic> _locationPredictions = [];
-  List<dynamic> _destinationPredictions = [];
-  Timer? _debounce;
-
-  bool _showLocationSuggestions = false;
-  bool _showDestinationSuggestions = false;
 
   @override
   void initState() {
@@ -52,8 +47,6 @@ class _FilterSearchState extends State<FilterSearch> {
     for (var filter in widget.initialFilters) {
       _filters[filter] = true;
     }
-    _locationController.addListener(() => _onTextChanged(_locationController, true));
-    _destinationController.addListener(() => _onTextChanged(_destinationController, false));
   }
 
   void _applyFilters() {
@@ -64,172 +57,193 @@ class _FilterSearchState extends State<FilterSearch> {
     widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000);
   }
 
-  void _onTextChanged(TextEditingController controller, bool isLocation) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (controller.text.isNotEmpty) {
-        _getSuggestions(controller.text, isLocation);
-      }
-    });
-  }
+  Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AutocompleteScreen(
+          isLocation: isLocation,
+          initialText: isLocation
+              ? _locationController.text
+              : _destinationController.text,
+          onPlaceSelected: (place) {
+            setState(() {
+              if (isLocation) {
+                _locationController.text = place;
+              } else {
+                _destinationController.text = place;
+              }
+            });
+          },
+        ),
+      ),
+    );
 
-  Future<void> _getSuggestions(String input, bool isLocation) async {
-    String baseURL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request = '$baseURL?input=$input&key=$google_api_key';
-    var response = await http.get(Uri.parse(request));
-    if (response.statusCode == 200) {
+    if (result != null) {
       setState(() {
         if (isLocation) {
-          _locationPredictions = json.decode(response.body)['predictions'];
+          _locationController.text = result;
         } else {
-          _destinationPredictions = json.decode(response.body)['predictions'];
+          _destinationController.text = result;
         }
       });
-    } else {
-      throw Exception('Failed to load predictions');
-    }
-  }
-
-  Future<void> _selectPrediction(String placeId) async {
-    String url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$google_api_key';
-    var response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      var details = json.decode(response.body)['result'];
-      final lat = details['geometry']['location']['lat'];
-      final lng = details['geometry']['location']['lng'];
-      final name = details['name'];
-      // Handle marker addition in the parent widget if needed
-    } else {
-      throw Exception('Failed to load place details');
     }
   }
 
   @override
- Widget build(BuildContext context) {
-  return Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-    child: Container(
-      width: 380,
-      height: 550,
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            controller: _locationController,
-            decoration: InputDecoration(
-              hintText: 'Search Location',
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Colors.white),
-              ),
-            ),
-            onTap: () {
-              setState(() {
-                _showLocationSuggestions = true;
-                _showDestinationSuggestions = false;
-              });
-            },
-          ),
-          if (_showLocationSuggestions)
-            Container(
-              height: 150, // Adjust height as needed
-              padding: EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: _locationPredictions.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_locationPredictions[index]['description']),
-                    onTap: () {
-                      _selectPrediction(_locationPredictions[index]['place_id']);
-                      _locationController.text = _locationPredictions[index]['description'];
-                      _locationPredictions = [];
-                    },
-                  );
-                },
-              ),
-            ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _destinationController,
-            decoration: InputDecoration(
-              hintText: 'Search Destination',
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Colors.white),
-              ),
-            ),
-            onTap: () {
-              setState(() {
-                _showLocationSuggestions = false;
-                _showDestinationSuggestions = true;
-              });
-            },
-          ),
-          if (_showDestinationSuggestions)
-            Container(
-              height: 150, // Adjust height as needed
-              padding: EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: _destinationPredictions.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_destinationPredictions[index]['description']),
-                    onTap: () {
-                      _selectPrediction(_destinationPredictions[index]['place_id']);
-                      _destinationController.text = _destinationPredictions[index]['description'];
-                      _destinationPredictions = [];
-                    },
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Center(
-              child: Text(
-                'Radius',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF1C1C1C),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            Slider(
-              value: _currentSliderValue,
-              min: 0.0,
-              max: 20.0,
-              divisions: 40,
-              activeColor: const Color(0xFF1C1C1C),
-              label: "${_currentSliderValue.toStringAsFixed(1)} km",
-              onChanged: (val) {
-                setState(() {
-                  _currentSliderValue = val;
-                });
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Color(0xFFEEF0F2),
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: BorderSide(color: Colors.black)),
+      child: Container(
+        width: 360,
+        height: 550,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ///////////////////////////////////////////1 TEXTFIELD/////////////////////////////////////
+            TextField(
+              keyboardType: TextInputType.none,
+              controller: _locationController,
+              showCursor: false,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.zero,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Color(0xFFDADDD8),
+                  filled: true,
+                  prefixIcon: Container(
+                      height: 25,
+                      width: 25,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(left: 15),
+                      child: SvgPicture.asset("assets/images/location1.svg",
+                          height: 25, width: 25, fit: BoxFit.scaleDown)),
+                  hintText: 'Enter your location',
+                  hintStyle: TextStyle(
+                      fontSize: 14, color: Colors.black, fontFamily: 'Kanit')),
+              onTap: () {
+                _navigateToAutocompleteScreen(true);
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+///////////////////////////////////////////2 TEXTFIELD/////////////////////////////////////
+
+            SizedBox(
+              height: 60,
+              child: TextField(
+                keyboardType: TextInputType.none,
+                controller: _locationController,
+                showCursor: false,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    fillColor: Color(0xFFDADDD8),
+                    filled: true,
+                    prefixIcon: Container(
+                        height: 25,
+                        width: 25,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 15),
+                        child: SvgPicture.asset("assets/images/right_arrow.svg",
+                            height: 25, width: 25, fit: BoxFit.scaleDown)),
+                    hintText: 'Destination(optional)',
+                    hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontFamily: 'Kanit')),
+                onTap: () {
+                  _navigateToAutocompleteScreen(false);
+                },
+              ),
+            ),
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+            const Center(
+              child: Text('Radius',
+                  style: TextStyle(
+                      fontSize: 24, color: Colors.black, fontFamily: 'Kanit')),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                sliderTheme: const SliderThemeData(
+                  thumbShape: MySliderComponentShape(),
+                  trackHeight: 5,
+                  thumbColor: Color(0xFFD9D9D9),
+                ),
+              ),
+              child: Slider(
+                inactiveColor: Color(0xFFFAFAFF),
+                value: _currentSliderValue,
+                min: 0.0,
+                max: 20.0,
+                divisions: 40,
+                activeColor: const Color(0xFFD9D9D9),
+                onChanged: (val) {
+                  setState(() {
+                    _currentSliderValue = val;
+                  });
+                },
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${_currentSliderValue.toStringAsFixed(1)} km',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                        fontSize: 14, color: Colors.black, fontFamily: 'Kanit'),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 0),
             const Center(
               child: Text(
                 'Select type',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF1C1C1C),
-                ),
+                    fontSize: 24, color: Colors.black, fontFamily: 'Kanit'),
               ),
             ),
-            const SizedBox(height: 8.0),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
-                childAspectRatio: 4,
-                shrinkWrap: true,
+                childAspectRatio: 5,
+                mainAxisSpacing: 4,
+                crossAxisSpacing:     0,
                 physics: NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
                   return CheckboxListTile(
-                    title: Text(key),
+                    title: Container(
+                      
+                      padding: EdgeInsets.all(5),
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFD9D9D9),
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      child: Text(
+                        key,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Kanit'),
+                      ),
+                    ),
+                    contentPadding:EdgeInsets.all(0),
+                    //tileColor:Colors.amber,
+                    controlAffinity: ListTileControlAffinity.trailing,
                     activeColor: const Color(0xFF1C1C1C),
                     checkColor: Colors.white,
                     value: _filters[key],
@@ -278,3 +292,41 @@ class _FilterSearchState extends State<FilterSearch> {
   }
 }
 
+class MySliderComponentShape extends SliderComponentShape {
+  const MySliderComponentShape();
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
+    return const Size(34, 34);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset center,
+      {required Animation<double> activationAnimation,
+      required Animation<double> enableAnimation,
+      required bool isDiscrete,
+      required TextPainter labelPainter,
+      required RenderBox parentBox,
+      required SliderThemeData sliderTheme,
+      required TextDirection textDirection,
+      required double value,
+      required double textScaleFactor,
+      required Size sizeWithOverflow}) {
+    final Canvas canvas = context.canvas;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: center, width: 24, height: 24),
+        const Radius.circular(32),
+      ),
+      Paint()..color = Color.fromARGB(255, 0, 0, 0),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: center, width: 21, height: 21),
+        const Radius.circular(32),
+      ),
+      Paint()..color = const Color(0xFFD9D9D9),
+    );
+  }
+}
