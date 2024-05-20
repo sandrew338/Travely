@@ -6,10 +6,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/components/constans.dart';
 import 'package:travely/model/nearby_response.dart';
 import 'package:flutter_svg/svg.dart';
+
 class FilterSearch extends StatefulWidget {
   final Function(List<String>, double) onFilterChanged;
+  final Function() showRoutesModal;
 
-  const FilterSearch({Key? key, required this.onFilterChanged}) : super(key: key);
+  const FilterSearch(
+      {super.key,
+      required this.onFilterChanged,
+      required this.showRoutesModal});
 
   @override
   _FilterSearchState createState() => _FilterSearchState();
@@ -17,7 +22,7 @@ class FilterSearch extends StatefulWidget {
 
 class _FilterSearchState extends State<FilterSearch> {
   double _currentSliderValue = 1.5;
-  Map<String, bool> _filters = {
+  final Map<String, bool> _filters = {
     "art gallery": false,
     "museum": false,
     "store": false,
@@ -35,6 +40,7 @@ class _FilterSearchState extends State<FilterSearch> {
         .map((entry) => entry.key)
         .toList();
     widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000);
+    widget.showRoutesModal(); // Викликаємо функцію showRoutesModal через widget
   }
 
   @override
@@ -140,7 +146,7 @@ class _FilterSearchState extends State<FilterSearch> {
             crossAxisCount: 2,
             childAspectRatio: 4,
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: _filters.keys.map((String key) {
               return CheckboxListTile(
                 title: Text(key),
@@ -190,14 +196,15 @@ class _FilterSearchState extends State<FilterSearch> {
     );
   }
 }
+
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
+
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController _controller;
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   String apiKey = google_api_key; // Replace with your Google API key
   double latitude = 49.8401193;
@@ -207,6 +214,62 @@ class _MapPageState extends State<MapPage> {
 
   List<String> selectedFilters = [];
   double radius = 1000;
+
+  void _showRoutesModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: 200,
+          child: ListView.builder(
+            itemCount: 5, // Assuming you have a list of 5 routes
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('Route ${index + 1}'),
+                onTap: () {
+                  _showRoutePoints(index); // Show points for the selected route
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showRoutePoints(int routeIndex) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        // Assuming you have a list of points for each route
+        List<LatLng> routePoints = []; // Fetch points for the selected route
+
+        // Print route points for debugging
+        print('Route Points: $routePoints');
+
+        if (routePoints.isEmpty) {
+          return const Center(
+            child: Text('No points found for this route.'),
+          );
+        }
+
+        return SizedBox(
+          height: 200,
+          child: ListView.builder(
+            itemCount: routePoints.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text('Point ${index + 1}'),
+                onTap: () {
+                  // Handle tapping on a point if needed
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,9 +287,7 @@ class _MapPageState extends State<MapPage> {
         children: <Widget>[
           GoogleMap(
             mapType: MapType.normal,
-            onMapCreated: (controller) {
-              _controller = controller;
-            },
+            onMapCreated: (controller) {},
             initialCameraPosition: CameraPosition(
               target: LatLng(latitude, longitude),
               zoom: 14.0,
@@ -292,6 +353,7 @@ class _MapPageState extends State<MapPage> {
             getNearbyPlaces();
             Navigator.pop(context); // Close the modal
           },
+          showRoutesModal: _showRoutesModal, // Передаємо посилання на функцію
         );
       },
     );
@@ -301,16 +363,7 @@ class _MapPageState extends State<MapPage> {
     List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            latitude.toString() +
-            ',' +
-            longitude.toString() +
-            '&radius=' +
-            radius.toString() +
-            '&types=' +
-            typesParameter +
-            '&key=' +
-            apiKey);
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$apiKey');
 
     var response = await http.post(url);
 
@@ -361,8 +414,7 @@ class _MapPageState extends State<MapPage> {
     List<LatLng> excursionRoad = [];
     for (int i = 0; i < points.length; i++) {
       LatLng origin = points[i];
-      LatLng destination =
-          points[(i + 1) % points.length];
+      LatLng destination = points[(i + 1) % points.length];
       List<LatLng> segmentPoints = await _getDirections(origin, destination);
       excursionRoad.addAll(segmentPoints);
     }
