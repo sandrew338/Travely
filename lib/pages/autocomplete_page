@@ -1,18 +1,18 @@
-import 'dart:async'; // Add this import
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart'; // Make sure to import this package for LatLng
 import 'package:travely/components/constans.dart';
 
 class AutocompleteScreen extends StatefulWidget {
   final bool isLocation;
   final String initialText;
-  final Function(String) onPlaceSelected;
+
   const AutocompleteScreen({
     Key? key,
     required this.isLocation,
     required this.initialText,
-    required this.onPlaceSelected,
   }) : super(key: key);
 
   @override
@@ -60,8 +60,9 @@ class _AutocompleteScreenState extends State<AutocompleteScreen> {
     if (response.statusCode == 200) {
       var details = json.decode(response.body)['result'];
       final description = details['name'];
-      widget.onPlaceSelected(description);
-      Navigator.pop(context);
+      final lat = details['geometry']['location']['lat'];
+      final lng = details['geometry']['location']['lng'];
+      Navigator.pop(context, {'description': description, 'lat': lat, 'lng': lng});
     } else {
       throw Exception('Failed to load place details');
     }
@@ -83,8 +84,9 @@ class _AutocompleteScreenState extends State<AutocompleteScreen> {
         children: [
           TextField(
             controller: _controller,
+            autofocus: true,
             decoration: InputDecoration(
-              hintText: widget.isLocation ? 'Search Location' : 'Search Destination',
+              hintText: widget.isLocation ? 'Enter your location' : 'Search Destination',
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
                 borderSide: BorderSide(color: Colors.white),

@@ -5,18 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/pages/autocomplete_page';
 
 class FilterSearch extends StatefulWidget {
-  final Function(List<String>, double) onFilterChanged;
+  final Function(List<String>, double, LatLng, LatLng) onFilterChanged;
   final List<String> initialFilters;
   final double initialRadius;
+  final LatLng sourceLocation;
+  final LatLng destinationLocation;
 
-  const FilterSearch({
+  FilterSearch({
     Key? key,
     required this.onFilterChanged,
     this.initialFilters = const [],
-    this.initialRadius = 1500,
+    this.initialRadius = 1500, 
+    this.sourceLocation = const LatLng(0.0, 0.0), // Provide default values if needed
+    this.destinationLocation = const LatLng(0.0, 0.0), // Provide default values if needed
   }) : super(key: key);
 
   @override
@@ -28,7 +33,7 @@ class _FilterSearchState extends State<FilterSearch> {
   late Map<String, bool> _filters;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
-
+   bool _filtersChanged = false;
   @override
   void initState() {
     super.initState();
@@ -49,46 +54,68 @@ class _FilterSearchState extends State<FilterSearch> {
     }
   }
 
-  void _applyFilters() {
-    List<String> selectedFilters = _filters.entries
-        .where((entry) => entry.value)
-        .map((entry) => entry.key)
-        .toList();
-    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000);
-  }
+   void _applyFilters() {
+  List<String> selectedFilters = _filters.entries
+      .where((entry) => entry.value)
+      .map((entry) => entry.key)
+      .toList();
 
-  Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AutocompleteScreen(
-          isLocation: isLocation,
-          initialText: isLocation
-              ? _locationController.text
-              : _destinationController.text,
-          onPlaceSelected: (place) {
-            setState(() {
-              if (isLocation) {
-                _locationController.text = place;
-              } else {
-                _destinationController.text = place;
-              }
-            });
-          },
-        ),
+  // Reset text controllers
+  _locationController.clear();
+  _destinationController.clear();
+
+  // Set source and destination locations to default values
+  final defaultSourceLocation = LatLng(0.0, 0.0);
+  final defaultDestinationLocation = LatLng(0.0, 0.0);
+
+  // Pass the locations along with the selected filters and radius
+  widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000, defaultSourceLocation, defaultDestinationLocation);
+}
+
+Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => AutocompleteScreen(
+        isLocation: isLocation,
+        initialText: isLocation ? _locationController.text : _destinationController.text,
       ),
-    );
+    ),
+  );
 
-    if (result != null) {
-      setState(() {
-        if (isLocation) {
-          _locationController.text = result;
-        } else {
-          _destinationController.text = result;
-        }
-      });
-    }
+  if (result != null) {
+    setState(() {
+      if (isLocation) {
+        _locationController.text = result['description'];
+        final newSourceLocation = LatLng(result['lat'], result['lng']);
+        // Update the state with the new source location
+        widget.onFilterChanged(
+          _filters.entries
+              .where((entry) => entry.value)
+              .map((entry) => entry.key)
+              .toList(),
+          _currentSliderValue * 1000,
+          newSourceLocation,
+          widget.destinationLocation,
+        );
+      } else {
+        _destinationController.text = result['description'];
+        final newDestinationLocation = LatLng(result['lat'], result['lng']);
+        // Update the state with the new destination location
+        widget.onFilterChanged(
+          _filters.entries
+              .where((entry) => entry.value)
+              .map((entry) => entry.key)
+              .toList(),
+          _currentSliderValue * 1000,
+          widget.sourceLocation,
+          newDestinationLocation,
+        );
+      }
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +132,6 @@ class _FilterSearchState extends State<FilterSearch> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ///////////////////////////////////////////1 TEXTFIELD/////////////////////////////////////
             TextField(
               keyboardType: TextInputType.none,
               controller: _locationController,
@@ -133,13 +159,11 @@ class _FilterSearchState extends State<FilterSearch> {
               },
             ),
             const SizedBox(height: 16),
-///////////////////////////////////////////2 TEXTFIELD/////////////////////////////////////
-
             SizedBox(
               height: 60,
               child: TextField(
                 keyboardType: TextInputType.none,
-                controller: _locationController,
+                controller: _destinationController,
                 showCursor: false,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.zero,
@@ -166,8 +190,6 @@ class _FilterSearchState extends State<FilterSearch> {
                 },
               ),
             ),
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
             const Center(
               child: Text('Radius',
                   style: TextStyle(
@@ -208,26 +230,23 @@ class _FilterSearchState extends State<FilterSearch> {
                 ),
               ],
             ),
-
             const SizedBox(height: 0),
             const Center(
               child: Text(
                 'Select type',
                 style: TextStyle(
-                    fontSize: 24, color: Colors.black, fontFamily: 'Kanit'),
-              ),
+                    fontSize: 24, color: Colors.black, fontFamily: 'Kanit')),
             ),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 childAspectRatio: 5,
                 mainAxisSpacing: 4,
-                crossAxisSpacing:     0,
+                crossAxisSpacing: 0,
                 physics: NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
                   return CheckboxListTile(
                     title: Container(
-                      
                       padding: EdgeInsets.all(5),
                       width: 50,
                       decoration: BoxDecoration(
@@ -241,8 +260,7 @@ class _FilterSearchState extends State<FilterSearch> {
                             fontFamily: 'Kanit'),
                       ),
                     ),
-                    contentPadding:EdgeInsets.all(0),
-                    //tileColor:Colors.amber,
+                    contentPadding: EdgeInsets.all(0),
                     controlAffinity: ListTileControlAffinity.trailing,
                     activeColor: const Color(0xFF1C1C1C),
                     checkColor: Colors.white,
@@ -261,7 +279,11 @@ class _FilterSearchState extends State<FilterSearch> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _applyFilters();
+                    _applyFilters(); // Apply filters only when the user clicks "OK"
+                    if (_filtersChanged) {
+                      Navigator.pop(context); // Close the dialog
+                      _filtersChanged = false; // Reset the flag
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: const Color(0xFF1C1C1C),
@@ -273,10 +295,10 @@ class _FilterSearchState extends State<FilterSearch> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context); // Close the dialog without applying filters
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.grey,
+                    foregroundColor: Color(0xFFD9D9D9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
