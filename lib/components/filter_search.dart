@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/pages/autocomplete_page';
 
@@ -19,9 +15,9 @@ class FilterSearch extends StatefulWidget {
     Key? key,
     required this.onFilterChanged,
     this.initialFilters = const [],
-    this.initialRadius = 1500, 
-    this.sourceLocation = const LatLng(0.0, 0.0), // Provide default values if needed
-    this.destinationLocation = const LatLng(0.0, 0.0), // Provide default values if needed
+    this.initialRadius = 1500,
+    this.sourceLocation = const LatLng(0.0, 0.0),
+    this.destinationLocation = const LatLng(0.0, 0.0),
   }) : super(key: key);
 
   @override
@@ -33,7 +29,8 @@ class _FilterSearchState extends State<FilterSearch> {
   late Map<String, bool> _filters;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
-   bool _filtersChanged = false;
+  bool _filtersChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -54,68 +51,62 @@ class _FilterSearchState extends State<FilterSearch> {
     }
   }
 
-   void _applyFilters() {
-  List<String> selectedFilters = _filters.entries
-      .where((entry) => entry.value)
-      .map((entry) => entry.key)
-      .toList();
+  void _applyFilters() {
+    List<String> selectedFilters = _filters.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
 
-  // Reset text controllers
-  _locationController.clear();
-  _destinationController.clear();
-
-  // Set source and destination locations to default values
-  final defaultSourceLocation = LatLng(0.0, 0.0);
-  final defaultDestinationLocation = LatLng(0.0, 0.0);
-
-  // Pass the locations along with the selected filters and radius
-  widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000, defaultSourceLocation, defaultDestinationLocation);
-}
-
-Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => AutocompleteScreen(
-        isLocation: isLocation,
-        initialText: isLocation ? _locationController.text : _destinationController.text,
-      ),
-    ),
-  );
-
-  if (result != null) {
-    setState(() {
-      if (isLocation) {
-        _locationController.text = result['description'];
-        final newSourceLocation = LatLng(result['lat'], result['lng']);
-        // Update the state with the new source location
-        widget.onFilterChanged(
-          _filters.entries
-              .where((entry) => entry.value)
-              .map((entry) => entry.key)
-              .toList(),
-          _currentSliderValue * 1000,
-          newSourceLocation,
-          widget.destinationLocation,
-        );
-      } else {
-        _destinationController.text = result['description'];
-        final newDestinationLocation = LatLng(result['lat'], result['lng']);
-        // Update the state with the new destination location
-        widget.onFilterChanged(
-          _filters.entries
-              .where((entry) => entry.value)
-              .map((entry) => entry.key)
-              .toList(),
-          _currentSliderValue * 1000,
-          widget.sourceLocation,
-          newDestinationLocation,
-        );
-      }
-    });
+    // Pass the locations along with the selected filters and radius
+    print('--------------------------------------------------------------------widget.sourceLocation: ${widget.sourceLocation}widget.destinationLocation: ${widget.destinationLocation}');
+    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000, widget.sourceLocation, widget.destinationLocation);
   }
-}
 
+  Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AutocompleteScreen(
+          isLocation: isLocation,
+          initialText: isLocation ? _locationController.text : _destinationController.text,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        if (isLocation) {
+          _locationController.text = result['description'];
+          final newSourceLocation = LatLng(result['lat'], result['lng']);
+          // Update the state with the new source location
+          widget.onFilterChanged(
+            _filters.entries
+                .where((entry) => entry.value)
+                .map((entry) => entry.key)
+                .toList(),
+            _currentSliderValue * 1000,
+            newSourceLocation,
+            widget.destinationLocation,
+            
+          );
+        } else {
+          _destinationController.text = result['description'];
+          final newDestinationLocation = LatLng(result['lat'], result['lng']);
+          // Update the state with the new destination location
+          widget.onFilterChanged(
+            _filters.entries
+                .where((entry) => entry.value)
+                .map((entry) => entry.key)
+                .toList(),
+            _currentSliderValue * 1000,
+            widget.sourceLocation,
+            newDestinationLocation,
+            
+          );
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +114,9 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
       backgroundColor: Color(0xFFEEF0F2),
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-          side: BorderSide(color: Colors.black)),
+        borderRadius: BorderRadius.circular(20.0),
+        side: BorderSide(color: Colors.black),
+      ),
       child: Container(
         width: 360,
         height: 550,
@@ -137,23 +129,32 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
               controller: _locationController,
               showCursor: false,
               decoration: InputDecoration(
-                  contentPadding: EdgeInsets.zero,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                    borderSide: BorderSide.none,
+                contentPadding: EdgeInsets.zero,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32.0),
+                  borderSide: BorderSide.none,
+                ),
+                fillColor: Color(0xFFDADDD8),
+                filled: true,
+                prefixIcon: Container(
+                  height: 25,
+                  width: 25,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(left: 15),
+                  child: SvgPicture.asset(
+                    "assets/images/location1.svg",
+                    height: 25,
+                    width: 25,
+                    fit: BoxFit.scaleDown,
                   ),
-                  fillColor: Color(0xFFDADDD8),
-                  filled: true,
-                  prefixIcon: Container(
-                      height: 25,
-                      width: 25,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(left: 15),
-                      child: SvgPicture.asset("assets/images/location1.svg",
-                          height: 25, width: 25, fit: BoxFit.scaleDown)),
-                  hintText: 'Enter your location',
-                  hintStyle: TextStyle(
-                      fontSize: 14, color: Colors.black, fontFamily: 'Kanit')),
+                ),
+                hintText: 'Enter your location',
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontFamily: 'Kanit',
+                ),
+              ),
               onTap: () {
                 _navigateToAutocompleteScreen(true);
               },
@@ -166,34 +167,46 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
                 controller: _destinationController,
                 showCursor: false,
                 decoration: InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      borderSide: BorderSide.none,
+                  contentPadding: EdgeInsets.zero,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  fillColor: Color(0xFFDADDD8),
+                  filled: true,
+                  prefixIcon: Container(
+                    height: 25,
+                    width: 25,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 15),
+                    child: SvgPicture.asset(
+                      "assets/images/right_arrow.svg",
+                      height: 25,
+                      width: 25,
+                      fit: BoxFit.scaleDown,
                     ),
-                    fillColor: Color(0xFFDADDD8),
-                    filled: true,
-                    prefixIcon: Container(
-                        height: 25,
-                        width: 25,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(left: 15),
-                        child: SvgPicture.asset("assets/images/right_arrow.svg",
-                            height: 25, width: 25, fit: BoxFit.scaleDown)),
-                    hintText: 'Destination(optional)',
-                    hintStyle: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: 'Kanit')),
+                  ),
+                  hintText: 'Destination (optional)',
+                  hintStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontFamily: 'Kanit',
+                  ),
+                ),
                 onTap: () {
                   _navigateToAutocompleteScreen(false);
                 },
               ),
             ),
             const Center(
-              child: Text('Radius',
-                  style: TextStyle(
-                      fontSize: 24, color: Colors.black, fontFamily: 'Kanit')),
+              child: Text(
+                'Radius',
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontFamily: 'Kanit',
+                ),
+              ),
             ),
             Theme(
               data: Theme.of(context).copyWith(
@@ -213,6 +226,7 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
                 onChanged: (val) {
                   setState(() {
                     _currentSliderValue = val;
+                    _filtersChanged = true; // Mark filters as changed
                   });
                 },
               ),
@@ -225,7 +239,10 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
                     '${_currentSliderValue.toStringAsFixed(1)} km',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                        fontSize: 14, color: Colors.black, fontFamily: 'Kanit'),
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontFamily: 'Kanit',
+                    ),
                   ),
                 ),
               ],
@@ -235,7 +252,11 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
               child: Text(
                 'Select type',
                 style: TextStyle(
-                    fontSize: 24, color: Colors.black, fontFamily: 'Kanit')),
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontFamily: 'Kanit',
+                ),
+              ),
             ),
             Expanded(
               child: GridView.count(
@@ -250,14 +271,16 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
                       padding: EdgeInsets.all(5),
                       width: 50,
                       decoration: BoxDecoration(
-                          color: Color(0xFFD9D9D9),
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                        color: Color(0xFFD9D9D9),
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
                       child: Text(
                         key,
                         style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontFamily: 'Kanit'),
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontFamily: 'Kanit',
+                        ),
                       ),
                     ),
                     contentPadding: EdgeInsets.all(0),
@@ -268,6 +291,7 @@ Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
                     onChanged: (bool? value) {
                       setState(() {
                         _filters[key] = value!;
+                        _filtersChanged = true; // Mark filters as changed
                       });
                     },
                   );

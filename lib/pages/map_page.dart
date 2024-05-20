@@ -4,8 +4,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:travely/components/constans.dart';
@@ -18,14 +16,11 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   late GoogleMapController _controller;
- bool _filtersChanged = false;
-  TextEditingController _locationController =
-      TextEditingController(); // Define location controller
-  TextEditingController _destinationController =
-      TextEditingController(); // Define destination controller
+  bool _filtersChanged = false;
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _destinationController = TextEditingController();
   LatLng sourceLocation = LatLng(0.0, 0.0);
   LatLng destinationLocation = LatLng(0.0, 0.0);
-
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   Timer? _debounce;
   double latitude = 49.8401193;
@@ -110,60 +105,54 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-void _openFilterModal() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return FilterSearch(
-            onFilterChanged: (filters, newRadius, selectedSourceLocation, selectedDestinationLocation) {
-              setState(() {
-                selectedFilters = filters;
-                radius = newRadius;
-                sourceLocation = selectedSourceLocation;
-                destinationLocation = selectedDestinationLocation;
-                _filtersChanged = true; // Set the flag to indicate changes
-              });
-            },
-            initialFilters: selectedFilters,
-            initialRadius: radius,
-            sourceLocation: sourceLocation,
-            destinationLocation: destinationLocation,
-          );
-        },
-      );
-    },
-  ).then((value) {
-    print("Filters changed: $_filtersChanged"); // Debug print
-    // Perform actions only after user clicks "OK"
-    if (_filtersChanged) {
-      print("Performing actions..."); // Debug print
-      getNearbyPlaces();
-      _generateRoutes();
-      _showRoutesBottomSheet();
-      _filtersChanged = false; // Reset the flag
-    }
-  });
-}
-
-
+  void _openFilterModal() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return FilterSearch(
+              onFilterChanged: (filters, newRadius, selectedSourceLocation, selectedDestinationLocation) {
+                setState(() {
+                  selectedFilters = filters;
+                  radius = newRadius;
+                  sourceLocation = selectedSourceLocation;
+                  destinationLocation = selectedDestinationLocation;
+                  _filtersChanged = true;
+                  print('radius: $radius / sourceLocation: $sourceLocation/ destinationLocation: $destinationLocation/ filters $filters');
+                });
+              },
+              initialFilters: selectedFilters,
+              initialRadius: radius,
+              sourceLocation: sourceLocation,
+              destinationLocation: destinationLocation,
+            );
+          },
+        );
+      },
+    ).then((value) {
+      if (_filtersChanged) {
+        getNearbyPlaces();
+        _generateRoutes();
+        _showRoutesBottomSheet();
+        _filtersChanged = false;
+      }
+    });
+  }
 
   void _generateRoutes() {
-    // Clear previous routes
     routes.clear();
-    //add the source place
-
-    // Generate 5 routes
     for (int i = 0; i < 5; i++) {
       List<LatLng> route = [];
-      if (!(sourceLocation.latitude == 0 && sourceLocation.longitude == 0))
+      if (!(sourceLocation.latitude == 0 && sourceLocation.longitude == 0)) {
         route.add(sourceLocation);
-      // Randomly select 10 points from the nearby places
-      for (int j = 0; j < 10; j++) {
+      }
+      for (int j = 0; j < 8; j++) {
         int randomIndex = Random().nextInt(points.length);
         route.add(points[randomIndex]);
+        
       }
+      route.add(destinationLocation);
       routes.add(route);
     }
   }
@@ -191,12 +180,10 @@ void _openFilterModal() {
                 child: ListView.builder(
                   itemCount: routes.length,
                   itemBuilder: (context, index) {
-                    // Build each route item here
                     return ListTile(
                       title: Text('Route ${index + 1}'),
                       onTap: () {
-                        _showRoute(
-                            routes[index]); // Show the selected route on map
+                        _showRoute(routes[index]);
                       },
                     );
                   },
@@ -259,7 +246,7 @@ void _openFilterModal() {
     longitude = sourceLocation.longitude;
     latitude = sourceLocation.latitude;
 
-    getresponse(); // Assuming getresponse() is a synchronous method
+    getresponse();
 
     for (var result in nearbyPlacesResponse.results!) {
       double? lat = result.geometry?.location?.lat;
@@ -336,59 +323,46 @@ void _openFilterModal() {
       int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
       lng += dlng;
 
-      double latitude = lat / 1E5;
-      double longitude = lng / 1E5;
-      points.add(LatLng(latitude, longitude));
+      points.add(LatLng(lat / 1E5, lng / 1E5));
     }
     return points;
   }
 
   void _onLocationChanged() {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_locationController.text.isNotEmpty) {
-        _getSuggestions(_locationController.text, true);
-      }
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        latitude = _locationController.text.isEmpty ? latitude : double.parse(_locationController.text.split(',')[0]);
+        longitude = _locationController.text.isEmpty ? longitude : double.parse(_locationController.text.split(',')[1]);
+      });
     });
-  }
-
-  void _onDestinationChanged() {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_destinationController.text.isNotEmpty) {
-        _getSuggestions(_destinationController.text, false);
-      }
-    });
-  }
-
-  void _getSuggestions(String text, bool isLocation) {
-    // Implement your suggestions logic here
   }
 }
 
 class NearbyPlacesResponse {
-  List<NearbyPlace>? results;
+  List<Results>? results;
 
   NearbyPlacesResponse({this.results});
 
   NearbyPlacesResponse.fromJson(Map<String, dynamic> json) {
     if (json['results'] != null) {
-      results = [];
+      results = <Results>[];
       json['results'].forEach((v) {
-        results!.add(NearbyPlace.fromJson(v));
+        results!.add(Results.fromJson(v));
       });
     }
   }
 }
 
-class NearbyPlace {
+class Results {
   Geometry? geometry;
 
-  NearbyPlace({this.geometry});
+  Results({this.geometry});
 
-  NearbyPlace.fromJson(Map<String, dynamic> json) {
-    geometry =
-        json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
+  Results.fromJson(Map<String, dynamic> json) {
+    geometry = json['geometry'] != null
+        ? Geometry.fromJson(json['geometry'])
+        : null;
   }
 }
 
@@ -398,8 +372,9 @@ class Geometry {
   Geometry({this.location});
 
   Geometry.fromJson(Map<String, dynamic> json) {
-    location =
-        json['location'] != null ? Location.fromJson(json['location']) : null;
+    location = json['location'] != null
+        ? Location.fromJson(json['location'])
+        : null;
   }
 }
 
