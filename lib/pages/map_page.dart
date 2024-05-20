@@ -1,288 +1,45 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:travely/components/constans.dart';
-import 'package:travely/model/nearby_response.dart';
-import 'package:flutter_svg/svg.dart';
-
-class FilterSearch extends StatefulWidget {
-  final Function(List<String>, double) onFilterChanged;
-  final Function() showRoutesModal;
-
-  const FilterSearch(
-      {super.key,
-      required this.onFilterChanged,
-      required this.showRoutesModal});
-
-  @override
-  _FilterSearchState createState() => _FilterSearchState();
-}
-
-class _FilterSearchState extends State<FilterSearch> {
-  double _currentSliderValue = 1.5;
-  final Map<String, bool> _filters = {
-    "art gallery": false,
-    "museum": false,
-    "store": false,
-    "church": false,
-    "cafe": false,
-    "zoo": false,
-    "park": false,
-    "gym": false,
-    "aquarium": false,
-  };
-
-  void _applyFilters() {
-    List<String> selectedFilters = _filters.entries
-        .where((entry) => entry.value)
-        .map((entry) => entry.key)
-        .toList();
-    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000);
-    widget.showRoutesModal(); // Викликаємо функцію showRoutesModal через widget
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color.fromARGB(255, 235, 238, 235),
-              labelText: 'Enter your location',
-              labelStyle: const TextStyle(color: Color(0xFF1C1C1C)),
-              prefixIcon: SvgPicture.asset(
-                "assets/images/location1.svg",
-                height: 30,
-                fit: BoxFit.scaleDown,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(40),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color.fromARGB(255, 235, 238, 235),
-              labelText: 'Destination (optional)',
-              labelStyle: const TextStyle(color: Color(0xFF1C1C1C)),
-              prefixIcon: SvgPicture.asset(
-                "assets/images/right_arrow.svg",
-                height: 30,
-                fit: BoxFit.scaleDown,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(40),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Center(
-            child: Text(
-              'Radius',
-              style: TextStyle(
-                fontFamily: 'Kanit',
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1C1C1C),
-                height: 1.495,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          StatefulBuilder(
-            builder: (context, state) => Column(
-              children: [
-                Slider(
-                  value: _currentSliderValue,
-                  min: 0.0,
-                  max: 20.0,
-                  divisions: 40,
-                  activeColor: const Color(0xFF1C1C1C),
-                  label: "${_currentSliderValue.toStringAsFixed(1)} km",
-                  onChanged: (val) {
-                    state(() {
-                      _currentSliderValue = val;
-                    });
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '${_currentSliderValue.toStringAsFixed(1)} km',
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Center(
-            child: Text(
-              'Select type',
-              style: TextStyle(
-                fontFamily: 'Kanit',
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1C1C1C),
-                height: 1.495,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 4,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: _filters.keys.map((String key) {
-              return CheckboxListTile(
-                title: Text(key),
-                activeColor: const Color(0xFF1C1C1C),
-                checkColor: Colors.white,
-                value: _filters[key],
-                onChanged: (bool? value) {
-                  setState(() {
-                    _filters[key] = value!;
-                  });
-                },
-              );
-            }).toList(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  _applyFilters();
-                  //widget.onFilterChanged([], 0.0);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: const Color(0xFF1C1C1C),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: const Text('OK'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  widget.onFilterChanged([], 0.0);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: const Text('CANCEL'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+import 'package:travely/components/filter_search.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
-
   @override
-  State<MapPage> createState() => _MapPageState();
+  _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
+  late GoogleMapController _controller;
+ bool _filtersChanged = false;
+  TextEditingController _locationController =
+      TextEditingController(); // Define location controller
+  TextEditingController _destinationController =
+      TextEditingController(); // Define destination controller
+  LatLng sourceLocation = LatLng(0.0, 0.0);
+  LatLng destinationLocation = LatLng(0.0, 0.0);
+
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
-  String apiKey = google_api_key; // Replace with your Google API key
+  Timer? _debounce;
   double latitude = 49.8401193;
   double longitude = 24.0245918;
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
-
+  List<LatLng> points = [];
   List<String> selectedFilters = [];
-  double radius = 1000;
-
-  void _showRoutesModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(
-            itemCount: 5, // Assuming you have a list of 5 routes
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Route ${index + 1}'),
-                onTap: () {
-                  _showRoutePoints(index); // Show points for the selected route
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _showRoutePoints(int routeIndex) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        // Assuming you have a list of points for each route
-        List<LatLng> routePoints = []; // Fetch points for the selected route
-
-        // Print route points for debugging
-        print('Route Points: $routePoints');
-
-        if (routePoints.isEmpty) {
-          return const Center(
-            child: Text('No points found for this route.'),
-          );
-        }
-
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(
-            itemCount: routePoints.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Point ${index + 1}'),
-                onTap: () {
-                  // Handle tapping on a point if needed
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
+  double radius = 1500;
+  List<List<LatLng>> routes = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Map Search'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _openFilterModal(),
-          ),
-        ],
-      ),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -296,7 +53,7 @@ class _MapPageState extends State<MapPage> {
             polylines: polylines,
           ),
           Positioned(
-            top: 80,
+            top: 30,
             right: 15,
             left: 15,
             height: 55,
@@ -312,8 +69,9 @@ class _MapPageState extends State<MapPage> {
                     icon: const Icon(Icons.menu),
                     onPressed: () {},
                   ),
-                  const Expanded(
+                  Expanded(
                     child: TextField(
+                      controller: _locationController,
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.go,
@@ -322,9 +80,19 @@ class _MapPageState extends State<MapPage> {
                         contentPadding: EdgeInsets.symmetric(horizontal: 15),
                         hintText: "Search...",
                       ),
+                      onChanged: (value) {
+                        _onLocationChanged();
+                      },
                     ),
                   ),
-                  const Padding(
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/images/filter.svg",
+                      height: 30,
+                    ),
+                    onPressed: () => _openFilterModal(),
+                  ),
+                  Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
@@ -340,30 +108,140 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void _openFilterModal() {
+void _openFilterModal() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return FilterSearch(
+            onFilterChanged: (filters, newRadius, selectedSourceLocation, selectedDestinationLocation) {
+              setState(() {
+                selectedFilters = filters;
+                radius = newRadius;
+                sourceLocation = selectedSourceLocation;
+                destinationLocation = selectedDestinationLocation;
+                _filtersChanged = true; // Set the flag to indicate changes
+              });
+            },
+            initialFilters: selectedFilters,
+            initialRadius: radius,
+            sourceLocation: sourceLocation,
+            destinationLocation: destinationLocation,
+          );
+        },
+      );
+    },
+  ).then((value) {
+    print("Filters changed: $_filtersChanged"); // Debug print
+    // Perform actions only after user clicks "OK"
+    if (_filtersChanged) {
+      print("Performing actions..."); // Debug print
+      getNearbyPlaces();
+      _generateRoutes();
+      _showRoutesBottomSheet();
+      _filtersChanged = false; // Reset the flag
+    }
+  });
+}
+
+
+
+  void _generateRoutes() {
+    // Clear previous routes
+    routes.clear();
+    //add the source place
+
+    // Generate 5 routes
+    for (int i = 0; i < 5; i++) {
+      List<LatLng> route = [];
+      if (!(sourceLocation.latitude == 0 && sourceLocation.longitude == 0))
+        route.add(sourceLocation);
+      // Randomly select 10 points from the nearby places
+      for (int j = 0; j < 10; j++) {
+        int randomIndex = Random().nextInt(points.length);
+        route.add(points[randomIndex]);
+      }
+      routes.add(route);
+    }
+  }
+
+  void _showRoutesBottomSheet() {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return FilterSearch(
-          onFilterChanged: (filters, newRadius) {
-            setState(() {
-              selectedFilters = filters;
-              radius = newRadius;
-            });
-            getNearbyPlaces();
-            Navigator.pop(context); // Close the modal
-          },
-          showRoutesModal: _showRoutesModal, // Передаємо посилання на функцію
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Routes',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: routes.length,
+                  itemBuilder: (context, index) {
+                    // Build each route item here
+                    return ListTile(
+                      title: Text('Route ${index + 1}'),
+                      onTap: () {
+                        _showRoute(
+                            routes[index]); // Show the selected route on map
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
+  }
+
+  void _showRoute(List<LatLng> route) {
+    setState(() {
+      markers.clear();
+      polylines.clear();
+
+      for (int i = 0; i < route.length; i++) {
+        markers.add(Marker(
+          markerId: MarkerId(i.toString()),
+          position: route[i],
+          infoWindow: InfoWindow(title: 'Point ${i + 1}'),
+        ));
+      }
+      polylines.add(Polyline(
+        polylineId: PolylineId('route'),
+        points: route,
+        color: Colors.blue,
+        width: 5,
+      ));
+    });
   }
 
   Future<void> getresponse() async {
     List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$apiKey');
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
+            latitude.toString() +
+            ',' +
+            longitude.toString() +
+            '&radius=' +
+            radius.toString() +
+            '&types=' +
+            typesParameter +
+            '&key=' +
+            google_api_key);
 
     var response = await http.post(url);
 
@@ -373,12 +251,14 @@ class _MapPageState extends State<MapPage> {
     setState(() {});
   }
 
-  void getNearbyPlaces() async {
+  List<LatLng> getNearbyPlaces() {
     markers.clear();
     polylines.clear();
-    await getresponse();
+    longitude = sourceLocation.longitude;
+    latitude = sourceLocation.latitude;
 
-    List<LatLng> points = [];
+    getresponse(); // Assuming getresponse() is a synchronous method
+
     for (var result in nearbyPlacesResponse.results!) {
       double? lat = result.geometry?.location?.lat;
       double? lng = result.geometry?.location?.lng;
@@ -386,16 +266,7 @@ class _MapPageState extends State<MapPage> {
         points.add(LatLng(lat, lng));
       }
     }
-
-    for (int i = 0; i < points.length; i++) {
-      LatLng point = points[i];
-      markers.add(Marker(
-        markerId: MarkerId(point.toString()),
-        position: point,
-        infoWindow: InfoWindow(title: 'Point ${i + 1}'),
-      ));
-    }
-    await drawExcursionRoad(points);
+    return points;
   }
 
   Future<void> drawExcursionRoad(List<LatLng> points) async {
@@ -423,7 +294,7 @@ class _MapPageState extends State<MapPage> {
 
   Future<List<LatLng>> _getDirections(LatLng origin, LatLng destination) async {
     String url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude}&mode=walking&key=$apiKey';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$google_api_key';
 
     var response = await http.get(Uri.parse(url));
 
@@ -468,5 +339,76 @@ class _MapPageState extends State<MapPage> {
       points.add(LatLng(latitude, longitude));
     }
     return points;
+  }
+
+  void _onLocationChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (_locationController.text.isNotEmpty) {
+        _getSuggestions(_locationController.text, true);
+      }
+    });
+  }
+
+  void _onDestinationChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (_destinationController.text.isNotEmpty) {
+        _getSuggestions(_destinationController.text, false);
+      }
+    });
+  }
+
+  void _getSuggestions(String text, bool isLocation) {
+    // Implement your suggestions logic here
+  }
+}
+
+class NearbyPlacesResponse {
+  List<NearbyPlace>? results;
+
+  NearbyPlacesResponse({this.results});
+
+  NearbyPlacesResponse.fromJson(Map<String, dynamic> json) {
+    if (json['results'] != null) {
+      results = [];
+      json['results'].forEach((v) {
+        results!.add(NearbyPlace.fromJson(v));
+      });
+    }
+  }
+}
+
+class NearbyPlace {
+  Geometry? geometry;
+
+  NearbyPlace({this.geometry});
+
+  NearbyPlace.fromJson(Map<String, dynamic> json) {
+    geometry =
+        json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
+  }
+}
+
+class Geometry {
+  Location? location;
+
+  Geometry({this.location});
+
+  Geometry.fromJson(Map<String, dynamic> json) {
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+  }
+}
+
+class Location {
+  double? lat;
+  double? lng;
+
+  Location({this.lat, this.lng});
+
+  Location.fromJson(Map<String, dynamic> json) {
+    lat = json['lat'];
+    lng = json['lng'];
   }
 }
