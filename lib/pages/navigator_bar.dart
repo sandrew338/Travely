@@ -1,28 +1,18 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:travely/components/slide_menu.dart';
 import 'package:travely/pages/calendar_page.dart';
-
 import 'package:travely/pages/map_page.dart';
 import 'package:travely/pages/profile_page.dart';
 import 'package:travely/pages/routes_page.dart';
 
 class NavigatorBar extends StatefulWidget {
-  const NavigatorBar({super.key});
-
   @override
-  State<NavigatorBar> createState() => _NavigatorBarState();
+  _NavigatorBarState createState() => _NavigatorBarState();
 }
 
 class _NavigatorBarState extends State<NavigatorBar> {
   final PageController _pageController = PageController();
-  final List<Widget> _screens = [
-    MapPage(),
-    const RoutesPage(),
-    const CalendarPage(),
-    const ProfilePage()
-  ];
   int _selectedIndex = 0;
 
   void _onPageChanged(int selectedIndex) {
@@ -32,45 +22,53 @@ class _NavigatorBarState extends State<NavigatorBar> {
   }
 
   void _onItemTapped(int selectedIndex) {
-    print("Selected index: $selectedIndex");
+    setState(() {
+      _selectedIndex = selectedIndex;
+    });
     _pageController.jumpToPage(selectedIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(onItemTapped: _onItemTapped),
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: _screens,
+        children: [
+          MapPage(onItemTapped: _onItemTapped,),
+          RoutesPage(),
+          CalendarPage(),
+          ProfilePage(),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          backgroundColor: const Color(0xFFECEBE4),
-          onTap: _onItemTapped,
-          showUnselectedLabels: false,
-          showSelectedLabels: false,
-          items: [
-            BotNavItem(_selectedIndex == 0
-                ? "assets/images/selected/map_marker.svg"
-                : "assets/images/unselected/map_marker.svg"),
-            BotNavItem(_selectedIndex == 1
-                ? "assets/images/selected/fire_flame_curved.svg"
-                : "assets/images/unselected/fire_flame_curved.svg"),
-            BotNavItem(_selectedIndex == 2
-                ? "assets/images/selected/time_past.svg"
-                : "assets/images/unselected/time_past.svg"),
-            BotNavItem(_selectedIndex == 3
-                ? "assets/images/selected/circle_user.svg"
-                : "assets/images/unselected/circle_user.svg")
-          ]),
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        backgroundColor: const Color(0xFFECEBE4),
+        onTap: _onItemTapped,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
+        items: [
+          BotNavItem(_selectedIndex == 0
+              ? "assets/images/selected/map_marker.svg"
+              : "assets/images/unselected/map_marker.svg"),
+          BotNavItem(_selectedIndex == 1
+              ? "assets/images/selected/fire_flame_curved.svg"
+              : "assets/images/unselected/fire_flame_curved.svg"),
+          BotNavItem(_selectedIndex == 2
+              ? "assets/images/selected/time_past.svg"
+              : "assets/images/unselected/time_past.svg"),
+          BotNavItem(_selectedIndex == 3
+              ? "assets/images/selected/circle_user.svg"
+              : "assets/images/unselected/circle_user.svg")
+        ],
+      ),
     );
   }
 }
-
 
 class BotNavItem extends BottomNavigationBarItem {
   BotNavItem(String path, {Key? key})
@@ -87,4 +85,10 @@ class BotNavItem extends BottomNavigationBarItem {
           ),
           label: '', // Label text can be empty if needed
         );
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: NavigatorBar(),
+  ));
 }

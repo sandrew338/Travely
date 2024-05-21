@@ -18,8 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> editField(String field) async {
     Map<String, String> fieldTranslations = {
-      "username": "ім'я користувача",
-      "bio": "опис",
+      "username": "username",//ім'я користувача
+      "bio": "description",//опис
     };
 
     String translatedField = fieldTranslations[field] ?? field;
@@ -30,14 +30,14 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text(
-          "Редагувати $translatedField",
+          "edit $translatedField",//Редагувати
           style: const TextStyle(color: Colors.white),
         ),
         content: TextField(
           autofocus: true,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: "Введіть $translatedField",
+            hintText: "Enter $translatedField",//Введіть
             hintStyle: const TextStyle(color: Colors.grey),
           ),
           onChanged: (value) {
@@ -47,14 +47,14 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           TextButton(
             child: const Text(
-              "Відмінити",
+              "Cancel",//Відмінити
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             child: const Text(
-              "Зберегти",
+              "Save",//Зберегти
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.of(context).pop(newValue),
@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
           ],
-          title: Text("Мій профіль", style: TextStyle(color: Colors.grey[300])),
+          title: Text("My profile", style: TextStyle(color: Colors.grey[300])),//Мій профіль
           backgroundColor: Colors.grey[900],
         ),
         body: StreamBuilder<DocumentSnapshot>(
@@ -122,14 +122,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     //user details
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Мої дані",
+                      child: Text("My data",//Мої дані
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
                     //username
 
                     MyTextBox(
-                      sectionName: "Ім'я користувача",
+                      sectionName: "Name",//Ім'я користувача
                       text: userData["username"],
                       onPressed: () => editField("username"),
                     ),
@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     //bio
 
                     MyTextBox(
-                      sectionName: "Опис",
+                      sectionName: "Description",//Опис
                       text: userData["bio"],
                       onPressed: () => editField("bio"),
                     ),
@@ -150,7 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Мої маршрути",
+                      child: Text("My routes",//Мої маршрути
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               } else if (snapshot.hasError) {
                 return Center(
-                  child: Text("Помилка${snapshot.error}"),
+                  child: Text("Error${snapshot.error}"),//Помилка
                 );
               }
 

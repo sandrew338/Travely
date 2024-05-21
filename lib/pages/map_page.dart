@@ -8,20 +8,24 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:travely/components/constans.dart';
 import 'package:travely/components/filter_search.dart';
+import 'package:travely/components/slide_menu.dart';
 
 class MapPage extends StatefulWidget {
+  final Function(int) onItemTapped;
+
+  MapPage({required this.onItemTapped});
+
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
   late GoogleMapController _controller;
-  //bool _filtersChanged = false;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   LatLng sourceLocation = LatLng(0.0, 0.0);
   LatLng destinationLocation = LatLng(0.0, 0.0);
-  NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
+  NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse(); // Assuming you have this class
   Timer? _debounce;
   double latitude = 49.8401193;
   double longitude = 24.0245918;
@@ -35,6 +39,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(onItemTapped: widget.onItemTapped), // Pass the callback function here
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -64,7 +69,9 @@ class _MapPageState extends State<MapPage> {
                   IconButton(
                     splashColor: Colors.grey,
                     icon: const Icon(Icons.menu),
-                    onPressed: () {},
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
                   ),
                   Expanded(
                     child: TextField(
