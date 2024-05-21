@@ -16,7 +16,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   late GoogleMapController _controller;
-  bool _filtersChanged = false;
+  //bool _filtersChanged = false;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
   LatLng sourceLocation = LatLng(0.0, 0.0);
@@ -105,42 +105,44 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void _openFilterModal() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return FilterSearch(
-              onFilterChanged: (filters, newRadius, selectedSourceLocation, selectedDestinationLocation) {
-                setState(() {
-                  selectedFilters = filters;
-                  radius = newRadius;
-                  sourceLocation = selectedSourceLocation;
-                  destinationLocation = selectedDestinationLocation;
-                  _filtersChanged = true;
-                  print('radius: $radius / sourceLocation: $sourceLocation/ destinationLocation: $destinationLocation/ filters $filters');
-                });
-              },
-              initialFilters: selectedFilters,
-              initialRadius: radius,
-              sourceLocation: sourceLocation,
-              destinationLocation: destinationLocation,
-            );
-          },
-        );
-      },
-    ).then((value) {
-      if (_filtersChanged) {
-        getNearbyPlaces();
-        _generateRoutes();
-        _showRoutesBottomSheet();
-        _filtersChanged = false;
-      }
-    });
-  }
+void _openFilterModal() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return FilterSearch(
+            onFilterChanged: (filters, newRadius, selectedSourceLocation,
+                selectedDestinationLocation) {
+              setState(() {
+                selectedFilters = filters;
+                radius = newRadius;
+                sourceLocation = selectedSourceLocation;
+                destinationLocation = selectedDestinationLocation;
+              });
+            },
+            initialFilters: selectedFilters,
+            initialRadius: radius,
+            sourceLocation: sourceLocation,
+            destinationLocation: destinationLocation,
+            onApplyFilters: () {
+              Navigator.pop(context);
+              // Call the necessary functions after applying filters
+              getNearbyPlaces();
+              _generateRoutes();
+              _showRoutesBottomSheet();
 
-  void _generateRoutes() {
+              // Close the filter dialog
+              
+            },
+          );
+        },
+      );
+    },
+  );
+}
+
+  Future<void> _generateRoutes() async {
     routes.clear();
     for (int i = 0; i < 5; i++) {
       List<LatLng> route = [];
@@ -150,76 +152,118 @@ class _MapPageState extends State<MapPage> {
       for (int j = 0; j < 8; j++) {
         int randomIndex = Random().nextInt(points.length);
         route.add(points[randomIndex]);
-        
       }
-      route.add(destinationLocation);
+      if (!(sourceLocation.latitude == 0.0 &&
+          sourceLocation.longitude == 0.0)) {
+        route.add(destinationLocation);
+      }
+
       routes.add(route);
     }
   }
 
-  void _showRoutesBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+void _showRoutesBottomSheet() {
+  showModalBottomSheet(
+    context: context,
+    isDismissible: true, // Enable swiping up to dismiss the bottom sheet
+    isScrollControlled: true,
+    builder: (context) {
+      return DraggableScrollableSheet(
+        expand: false,
+        builder: (context, scrollController) {
+          return Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Routes',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
+                  color: Colors.white,
                 ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: routes.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Route ${index + 1}'),
-                      onTap: () {
-                        _showRoute(routes[index]);
-                      },
-                    );
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Routes',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: routes.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text('Route ${index + 1}'),
+                            onTap: () {
+                              _showRoute(routes[index]);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
+    },
+  );
+}
+
+
 
   void _showRoute(List<LatLng> route) {
-    setState(() {
-      markers.clear();
-      polylines.clear();
+  setState(() {
+    markers.clear();
+    polylines.clear();
 
-      for (int i = 0; i < route.length; i++) {
-        markers.add(Marker(
-          markerId: MarkerId(i.toString()),
-          position: route[i],
-          infoWindow: InfoWindow(title: 'Point ${i + 1}'),
-        ));
-      }
+    // Add markers for each point in the route
+    for (int i = 0; i < route.length; i++) {
+      markers.add(Marker(
+        markerId: MarkerId(i.toString()),
+        position: route[i],
+        infoWindow: InfoWindow(title: 'Point ${i + 1}'),
+      ));
+    }
+
+    // Generate excursion road using _findExcursionRoad
+    _findExcursionRoad(route).then((excursionRoad) {
+      // Add polyline for excursion road
       polylines.add(Polyline(
-        polylineId: PolylineId('route'),
-        points: route,
+        polylineId: PolylineId('excursionRoad'),
+        points: excursionRoad,
         color: Colors.blue,
         width: 5,
       ));
     });
+  });
+}
+
+Future<List<LatLng>> _findExcursionRoad(List<LatLng> points) async {
+  List<LatLng> excursionRoad = [];
+  for (int i = 0; i < points.length; i++) {
+    LatLng origin = points[i];
+    LatLng destination = points[(i + 1) % points.length];
+    List<LatLng> segmentPoints = await _getDirections(origin, destination);
+    excursionRoad.addAll(segmentPoints);
   }
+  return excursionRoad;
+}
 
   Future<void> getresponse() async {
     List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
+    print(
+        'getresponse() | radius: $radius / sourceLocation: $sourceLocation/ destinationLocation: $destinationLocation/ filters $selectedFilters');
+
     var url = Uri.parse(
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
             latitude.toString() +
@@ -233,7 +277,7 @@ class _MapPageState extends State<MapPage> {
             google_api_key);
 
     var response = await http.post(url);
-
+    nearbyPlacesResponse.clearResults();
     nearbyPlacesResponse =
         NearbyPlacesResponse.fromJson(jsonDecode(response.body));
 
@@ -241,8 +285,6 @@ class _MapPageState extends State<MapPage> {
   }
 
   List<LatLng> getNearbyPlaces() {
-    markers.clear();
-    polylines.clear();
     longitude = sourceLocation.longitude;
     latitude = sourceLocation.latitude;
 
@@ -270,17 +312,7 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-  Future<List<LatLng>> _findExcursionRoad(List<LatLng> points) async {
-    List<LatLng> excursionRoad = [];
-    for (int i = 0; i < points.length; i++) {
-      LatLng origin = points[i];
-      LatLng destination = points[(i + 1) % points.length];
-      List<LatLng> segmentPoints = await _getDirections(origin, destination);
-      excursionRoad.addAll(segmentPoints);
-    }
-    return excursionRoad;
-  }
-
+  
   Future<List<LatLng>> _getDirections(LatLng origin, LatLng destination) async {
     String url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$google_api_key';
@@ -332,8 +364,12 @@ class _MapPageState extends State<MapPage> {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       setState(() {
-        latitude = _locationController.text.isEmpty ? latitude : double.parse(_locationController.text.split(',')[0]);
-        longitude = _locationController.text.isEmpty ? longitude : double.parse(_locationController.text.split(',')[1]);
+        latitude = _locationController.text.isEmpty
+            ? latitude
+            : double.parse(_locationController.text.split(',')[0]);
+        longitude = _locationController.text.isEmpty
+            ? longitude
+            : double.parse(_locationController.text.split(',')[1]);
       });
     });
   }
@@ -341,7 +377,6 @@ class _MapPageState extends State<MapPage> {
 
 class NearbyPlacesResponse {
   List<Results>? results;
-
   NearbyPlacesResponse({this.results});
 
   NearbyPlacesResponse.fromJson(Map<String, dynamic> json) {
@@ -352,6 +387,9 @@ class NearbyPlacesResponse {
       });
     }
   }
+  void clearResults() {
+    results?.clear();
+  }
 }
 
 class Results {
@@ -360,9 +398,8 @@ class Results {
   Results({this.geometry});
 
   Results.fromJson(Map<String, dynamic> json) {
-    geometry = json['geometry'] != null
-        ? Geometry.fromJson(json['geometry'])
-        : null;
+    geometry =
+        json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
   }
 }
 
@@ -372,9 +409,8 @@ class Geometry {
   Geometry({this.location});
 
   Geometry.fromJson(Map<String, dynamic> json) {
-    location = json['location'] != null
-        ? Location.fromJson(json['location'])
-        : null;
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
   }
 }
 

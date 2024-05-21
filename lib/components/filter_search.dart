@@ -3,21 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/pages/autocomplete_page';
-
 class FilterSearch extends StatefulWidget {
-  final Function(List<String>, double, LatLng, LatLng) onFilterChanged;
+  final Function(List<String> filters, double radius, LatLng sourceLocation, LatLng destinationLocation) onFilterChanged;
   final List<String> initialFilters;
   final double initialRadius;
   final LatLng sourceLocation;
   final LatLng destinationLocation;
+  final VoidCallback onApplyFilters;
 
   FilterSearch({
     Key? key,
     required this.onFilterChanged,
-    this.initialFilters = const [],
-    this.initialRadius = 1500,
-    this.sourceLocation = const LatLng(0.0, 0.0),
-    this.destinationLocation = const LatLng(0.0, 0.0),
+    required this.initialFilters,
+    required this.initialRadius,
+    required this.sourceLocation,
+    required this.destinationLocation,
+    required this.onApplyFilters,
   }) : super(key: key);
 
   @override
@@ -29,7 +30,6 @@ class _FilterSearchState extends State<FilterSearch> {
   late Map<String, bool> _filters;
   TextEditingController _locationController = TextEditingController();
   TextEditingController _destinationController = TextEditingController();
-  bool _filtersChanged = false;
 
   @override
   void initState() {
@@ -57,9 +57,8 @@ class _FilterSearchState extends State<FilterSearch> {
         .map((entry) => entry.key)
         .toList();
 
-    // Pass the locations along with the selected filters and radius
-    print('--------------------------------------------------------------------widget.sourceLocation: ${widget.sourceLocation}widget.destinationLocation: ${widget.destinationLocation}');
     widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000, widget.sourceLocation, widget.destinationLocation);
+    widget.onApplyFilters();
   }
 
   Future<void> _navigateToAutocompleteScreen(bool isLocation) async {
@@ -78,30 +77,20 @@ class _FilterSearchState extends State<FilterSearch> {
         if (isLocation) {
           _locationController.text = result['description'];
           final newSourceLocation = LatLng(result['lat'], result['lng']);
-          // Update the state with the new source location
           widget.onFilterChanged(
-            _filters.entries
-                .where((entry) => entry.value)
-                .map((entry) => entry.key)
-                .toList(),
+            _filters.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
             _currentSliderValue * 1000,
             newSourceLocation,
             widget.destinationLocation,
-            
           );
         } else {
           _destinationController.text = result['description'];
           final newDestinationLocation = LatLng(result['lat'], result['lng']);
-          // Update the state with the new destination location
           widget.onFilterChanged(
-            _filters.entries
-                .where((entry) => entry.value)
-                .map((entry) => entry.key)
-                .toList(),
+            _filters.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
             _currentSliderValue * 1000,
             widget.sourceLocation,
             newDestinationLocation,
-            
           );
         }
       });
@@ -226,7 +215,6 @@ class _FilterSearchState extends State<FilterSearch> {
                 onChanged: (val) {
                   setState(() {
                     _currentSliderValue = val;
-                    _filtersChanged = true; // Mark filters as changed
                   });
                 },
               ),
@@ -266,34 +254,39 @@ class _FilterSearchState extends State<FilterSearch> {
                 crossAxisSpacing: 0,
                 physics: NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
-                  return CheckboxListTile(
-                    title: Container(
-                      padding: EdgeInsets.all(5),
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFD9D9D9),
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                      ),
-                      child: Text(
-                        key,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontFamily: 'Kanit',
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFD9D9D9),
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                            ),
+                            child: Text(
+                              key,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        Checkbox(
+                          activeColor: const Color(0xFF1C1C1C),
+                          checkColor: Colors.white,
+                          value: _filters[key],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _filters[key] = value!;
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                    contentPadding: EdgeInsets.all(0),
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    activeColor: const Color(0xFF1C1C1C),
-                    checkColor: Colors.white,
-                    value: _filters[key],
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _filters[key] = value!;
-                        _filtersChanged = true; // Mark filters as changed
-                      });
-                    },
                   );
                 }).toList(),
               ),
@@ -303,11 +296,8 @@ class _FilterSearchState extends State<FilterSearch> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _applyFilters(); // Apply filters only when the user clicks "OK"
-                    if (_filtersChanged) {
-                      Navigator.pop(context); // Close the dialog
-                      _filtersChanged = false; // Reset the flag
-                    }
+                    _applyFilters(); // Apply filters and call the callback passed from the parent
+                    //Navigator.pop(context); // Close the dialog
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: const Color(0xFF1C1C1C),
