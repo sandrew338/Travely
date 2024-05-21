@@ -246,7 +246,6 @@ class NearByPlacesScreen extends StatefulWidget {
 }
 
 class _NearByPlacesScreenState extends State<NearByPlacesScreen> {
-  late GoogleMapController _controller;
   double latitude = 49.8401193;
   double longitude = 24.0245918;
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();

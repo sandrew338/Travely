@@ -1,9 +1,8 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/pages/autocomplete_page';
@@ -15,8 +14,8 @@ class FilterSearch extends StatefulWidget {
   final LatLng sourceLocation;
   final LatLng destinationLocation;
 
-  FilterSearch({
-    Key? key,
+  const FilterSearch({
+    super.key,
     required this.onFilterChanged,
     this.initialFilters = const [],
     this.initialRadius = 1500,
@@ -24,7 +23,7 @@ class FilterSearch extends StatefulWidget {
         const LatLng(0.0, 0.0), // Provide default values if needed
     this.destinationLocation =
         const LatLng(0.0, 0.0), // Provide default values if needed
-  }) : super(key: key);
+  });
 
   @override
   _FilterSearchState createState() => _FilterSearchState();
@@ -33,8 +32,8 @@ class FilterSearch extends StatefulWidget {
 class _FilterSearchState extends State<FilterSearch> {
   late double _currentSliderValue;
   late Map<String, bool> _filters;
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _destinationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
   bool _filtersChanged = false;
   @override
   void initState() {
@@ -67,8 +66,8 @@ class _FilterSearchState extends State<FilterSearch> {
     _destinationController.clear();
 
     // Set source and destination locations to default values
-    final defaultSourceLocation = LatLng(0.0, 0.0);
-    final defaultDestinationLocation = LatLng(0.0, 0.0);
+    const defaultSourceLocation = LatLng(0.0, 0.0);
+    const defaultDestinationLocation = LatLng(0.0, 0.0);
 
     // Pass the locations along with the selected filters and radius
     widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000,
@@ -124,11 +123,11 @@ class _FilterSearchState extends State<FilterSearch> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Color(0xFFEEF0F2),
+      backgroundColor: const Color(0xFFEEF0F2),
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: BorderSide(color: Colors.black)),
+          side: const BorderSide(color: Colors.black)),
       child: Container(
         width: 360,
         height: 550,
@@ -146,7 +145,7 @@ class _FilterSearchState extends State<FilterSearch> {
                     borderRadius: BorderRadius.circular(32.0),
                     borderSide: BorderSide.none,
                   ),
-                  fillColor: Color(0xFFDADDD8),
+                  fillColor: const Color(0xFFDADDD8),
                   filled: true,
                   prefixIcon: Container(
                       height: 25,
@@ -156,7 +155,7 @@ class _FilterSearchState extends State<FilterSearch> {
                       child: SvgPicture.asset("assets/images/location1.svg",
                           height: 25, width: 25, fit: BoxFit.scaleDown)),
                   hintText: 'Enter your location',
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14, color: Colors.black, fontFamily: 'Kanit')),
               onTap: () {
                 _navigateToAutocompleteScreen(true);
@@ -175,7 +174,7 @@ class _FilterSearchState extends State<FilterSearch> {
                       borderRadius: BorderRadius.circular(32.0),
                       borderSide: BorderSide.none,
                     ),
-                    fillColor: Color(0xFFDADDD8),
+                    fillColor: const Color(0xFFDADDD8),
                     filled: true,
                     prefixIcon: Container(
                         height: 25,
@@ -185,7 +184,7 @@ class _FilterSearchState extends State<FilterSearch> {
                         child: SvgPicture.asset("assets/images/right_arrow.svg",
                             height: 25, width: 25, fit: BoxFit.scaleDown)),
                     hintText: 'Destination(optional)',
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
                         fontFamily: 'Kanit')),
@@ -208,7 +207,7 @@ class _FilterSearchState extends State<FilterSearch> {
                 ),
               ),
               child: Slider(
-                inactiveColor: Color(0xFFFAFAFF),
+                inactiveColor: const Color(0xFFFAFAFF),
                 value: _currentSliderValue,
                 min: 0.0,
                 max: 20.0,
@@ -228,7 +227,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   child: Text(
                     '${_currentSliderValue.toStringAsFixed(1)} km',
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 14, color: Colors.black, fontFamily: 'Kanit'),
                   ),
                 ),
@@ -246,24 +245,24 @@ class _FilterSearchState extends State<FilterSearch> {
                 childAspectRatio: 5,
                 mainAxisSpacing: 4,
                 crossAxisSpacing: 0,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
                   return CheckboxListTile(
                     title: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       width: 50,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Color(0xFFD9D9D9),
                           borderRadius: BorderRadius.all(Radius.circular(16))),
                       child: Text(
                         key,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 12,
                             color: Colors.black,
                             fontFamily: 'Kanit'),
                       ),
                     ),
-                    contentPadding: EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
                     controlAffinity: ListTileControlAffinity.trailing,
                     activeColor: const Color(0xFF1C1C1C),
                     checkColor: Colors.white,
@@ -302,7 +301,7 @@ class _FilterSearchState extends State<FilterSearch> {
                         context); // Close the dialog without applying filters
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Color(0xFFD9D9D9),
+                    foregroundColor: const Color(0xFFD9D9D9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -345,7 +344,7 @@ class MySliderComponentShape extends SliderComponentShape {
         Rect.fromCenter(center: center, width: 24, height: 24),
         const Radius.circular(32),
       ),
-      Paint()..color = Color.fromARGB(255, 0, 0, 0),
+      Paint()..color = const Color.fromARGB(255, 0, 0, 0),
     );
     canvas.drawRRect(
       RRect.fromRectAndRadius(

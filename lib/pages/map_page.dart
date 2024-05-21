@@ -1,30 +1,30 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:travely/components/constans.dart';
 import 'package:travely/components/filter_search.dart';
 
 class MapPage extends StatefulWidget {
+  const MapPage({super.key});
+
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController _controller;
  bool _filtersChanged = false;
-  TextEditingController _locationController =
+  final TextEditingController _locationController =
       TextEditingController(); // Define location controller
-  TextEditingController _destinationController =
-      TextEditingController(); // Define destination controller
-  LatLng sourceLocation = LatLng(0.0, 0.0);
-  LatLng destinationLocation = LatLng(0.0, 0.0);
+// Define destination controller
+  LatLng sourceLocation = const LatLng(0.0, 0.0);
+  LatLng destinationLocation = const LatLng(0.0, 0.0);
 
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   Timer? _debounce;
@@ -75,7 +75,7 @@ class _MapPageState extends State<MapPage> {
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 15),
                         hintText: "Search...",
@@ -92,7 +92,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                     onPressed: () => _openFilterModal(),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
@@ -133,10 +133,10 @@ void _openFilterModal() {
       );
     },
   ).then((value) {
-    print("Filters changed: $_filtersChanged"); // Debug print
+    // Debug print
     // Perform actions only after user clicks "OK"
     if (_filtersChanged) {
-      print("Performing actions..."); // Debug print
+      // Debug print
       getNearbyPlaces();
       _generateRoutes();
       _showRoutesBottomSheet();
@@ -155,8 +155,9 @@ void _openFilterModal() {
     // Generate 5 routes
     for (int i = 0; i < 5; i++) {
       List<LatLng> route = [];
-      if (!(sourceLocation.latitude == 0 && sourceLocation.longitude == 0))
+      if (!(sourceLocation.latitude == 0 && sourceLocation.longitude == 0)) {
         route.add(sourceLocation);
+      }
       // Randomly select 10 points from the nearby places
       for (int j = 0; j < 10; j++) {
         int randomIndex = Random().nextInt(points.length);
@@ -170,13 +171,13 @@ void _openFilterModal() {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Routes',
                   style: TextStyle(
@@ -220,7 +221,7 @@ void _openFilterModal() {
         ));
       }
       polylines.add(Polyline(
-        polylineId: PolylineId('route'),
+        polylineId: const PolylineId('route'),
         points: route,
         color: Colors.blue,
         width: 5,
@@ -232,16 +233,7 @@ void _openFilterModal() {
     List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            latitude.toString() +
-            ',' +
-            longitude.toString() +
-            '&radius=' +
-            radius.toString() +
-            '&types=' +
-            typesParameter +
-            '&key=' +
-            google_api_key);
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$google_api_key');
 
     var response = await http.post(url);
 
@@ -350,14 +342,6 @@ void _openFilterModal() {
     });
   }
 
-  void _onDestinationChanged() {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_destinationController.text.isNotEmpty) {
-        _getSuggestions(_destinationController.text, false);
-      }
-    });
-  }
 
   void _getSuggestions(String text, bool isLocation) {
     // Implement your suggestions logic here

@@ -18,7 +18,7 @@ class NavigatorBar extends StatefulWidget {
 class _NavigatorBarState extends State<NavigatorBar> {
   final PageController _pageController = PageController();
   final List<Widget> _screens = [
-    MapPage(),
+    const MapPage(),
     const RoutesPage(),
     const CalendarPage(),
     const ProfilePage()
