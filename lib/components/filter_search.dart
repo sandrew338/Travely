@@ -23,7 +23,7 @@ class FilterSearch extends StatefulWidget {
     required this.sourceLocation,
     required this.destinationLocation,
     required this.onApplyFilters,
-  }) : super(key: key);
+  });
 
   @override
   _FilterSearchState createState() => _FilterSearchState();
@@ -32,8 +32,8 @@ class FilterSearch extends StatefulWidget {
 class _FilterSearchState extends State<FilterSearch> {
   late double _currentSliderValue;
   late Map<String, bool> _filters;
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _destinationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
 
   @override
   void initState() {
@@ -117,7 +117,7 @@ class _FilterSearchState extends State<FilterSearch> {
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: Colors.black),
+        side: const BorderSide(color: Colors.black),
       ),
       child: Container(
         width: 360,
@@ -136,7 +136,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   borderRadius: BorderRadius.circular(32.0),
                   borderSide: BorderSide.none,
                 ),
-                fillColor: Color(0xFFDADDD8),
+                fillColor: const Color(0xFFDADDD8),
                 filled: true,
                 prefixIcon: Container(
                   height: 25,
@@ -151,7 +151,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   ),
                 ),
                 hintText: 'Enter your location',
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
                   fontFamily: 'Kanit',
@@ -174,7 +174,7 @@ class _FilterSearchState extends State<FilterSearch> {
                     borderRadius: BorderRadius.circular(32.0),
                     borderSide: BorderSide.none,
                   ),
-                  fillColor: Color(0xFFDADDD8),
+                  fillColor: const Color(0xFFDADDD8),
                   filled: true,
                   prefixIcon: Container(
                     height: 25,
@@ -189,7 +189,7 @@ class _FilterSearchState extends State<FilterSearch> {
                     ),
                   ),
                   hintText: 'Destination (optional)',
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
                     fontFamily: 'Kanit',
@@ -239,7 +239,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   child: Text(
                     '${_currentSliderValue.toStringAsFixed(1)} km',
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black,
                       fontFamily: 'Kanit',
@@ -268,20 +268,20 @@ class _FilterSearchState extends State<FilterSearch> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       children: [
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
+                            padding: const EdgeInsets.all(5),
+                            decoration: const BoxDecoration(
                               color: Color(0xFFD9D9D9),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(16)),
                             ),
                             child: Text(
                               key,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
                                 fontFamily: 'Kanit',
