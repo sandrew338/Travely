@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -11,21 +13,20 @@ import 'package:travely/components/filter_search.dart';
 import 'package:travely/components/slide_menu.dart';
 
 class MapPage extends StatefulWidget {
-  final Function(int) onItemTapped;
-
-  MapPage({required this.onItemTapped});
+  const MapPage({super.key});
 
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController _controller;
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _destinationController = TextEditingController();
-  LatLng sourceLocation = LatLng(0.0, 0.0);
-  LatLng destinationLocation = LatLng(0.0, 0.0);
-  NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse(); // Assuming you have this class
+  //bool _filtersChanged = false;
+  List<Results> resultsPoints = [];
+
+  final TextEditingController _locationController = TextEditingController();
+  LatLng sourceLocation = const LatLng(0.0, 0.0);
+  LatLng destinationLocation = const LatLng(0.0, 0.0);
+  NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   Timer? _debounce;
   double latitude = 49.8401193;
   double longitude = 24.0245918;
@@ -44,9 +45,7 @@ class _MapPageState extends State<MapPage> {
         children: <Widget>[
           GoogleMap(
             mapType: MapType.normal,
-            onMapCreated: (controller) {
-              _controller = controller;
-            },
+            onMapCreated: (controller) {},
             initialCameraPosition: CameraPosition(
               target: LatLng(latitude, longitude),
               zoom: 14.0,
@@ -79,7 +78,7 @@ class _MapPageState extends State<MapPage> {
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 15),
                         hintText: "Search...",
@@ -96,7 +95,7 @@ class _MapPageState extends State<MapPage> {
                     ),
                     onPressed: () => _openFilterModal(),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(right: 8.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.deepPurple,
@@ -112,42 +111,42 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-void _openFilterModal() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return FilterSearch(
-            onFilterChanged: (filters, newRadius, selectedSourceLocation,
-                selectedDestinationLocation) {
-              setState(() {
-                selectedFilters = filters;
-                radius = newRadius;
-                sourceLocation = selectedSourceLocation;
-                destinationLocation = selectedDestinationLocation;
-              });
-            },
-            initialFilters: selectedFilters,
-            initialRadius: radius,
-            sourceLocation: sourceLocation,
-            destinationLocation: destinationLocation,
-            onApplyFilters: () {
-              Navigator.pop(context);
-              // Call the necessary functions after applying filters
-              getNearbyPlaces();
-              _generateRoutes();
-              _showRoutesBottomSheet();
+  void _openFilterModal() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return FilterSearch(
+              onFilterChanged: (filters, newRadius, selectedSourceLocation,
+                  selectedDestinationLocation) {
+                setState(() {
+                  selectedFilters = filters;
+                  radius = newRadius;
+                  sourceLocation = selectedSourceLocation;
+                  destinationLocation = selectedDestinationLocation;
+                });
+              },
+              initialFilters: selectedFilters,
+              initialRadius: radius,
+              sourceLocation: sourceLocation,
+              destinationLocation: destinationLocation,
+              onApplyFilters: () {
+                Navigator.pop(context);
+                // Call the necessary functions after applying filters
+                getNearbyPlaces();
+                _generateRoutes().then((_) {
+                  _showRoutesBottomSheet();
+                });
 
-              // Close the filter dialog
-              
-            },
-          );
-        },
-      );
-    },
-  );
-}
+                // Close the filter dialog
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
   Future<void> _generateRoutes() async {
     routes.clear();
@@ -160,8 +159,8 @@ void _openFilterModal() {
         int randomIndex = Random().nextInt(points.length);
         route.add(points[randomIndex]);
       }
-      if (!(sourceLocation.latitude == 0.0 &&
-          sourceLocation.longitude == 0.0)) {
+      if (!(destinationLocation.latitude == 0.0 &&
+          destinationLocation.longitude == 0.0)) {
         route.add(destinationLocation);
       }
 
@@ -169,149 +168,225 @@ void _openFilterModal() {
     }
   }
 
-void _showRoutesBottomSheet() {
-  showModalBottomSheet(
-    context: context,
-    isDismissible: true, // Enable swiping up to dismiss the bottom sheet
-    isScrollControlled: true,
-    builder: (context) {
-      return DraggableScrollableSheet(
-        expand: false,
-        builder: (context, scrollController) {
-          return Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+  void _showRoutesBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (context, scrollController) {
+            return Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    color: Colors.white,
                   ),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Routes',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Routes',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    Expanded(
-                      child: ListView.builder(
-                        controller: scrollController,
-                        itemCount: routes.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text('Route ${index + 1}'),
-                            onTap: () {
-                              _showRoute(routes[index]);
-                            },
-                          );
-                        },
+                      const SizedBox(height: 16),
+                      Expanded(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: routes.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text('Route ${index + 1}'),
+                              onTap: () {
+                                _showRoutePoints(routes[index], index);
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showRoutePoints(List<LatLng> route, int routeIndex) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                color: Colors.white,
               ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Route Points',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: route.length,
+                      itemBuilder: (context, index) {
+                        String imageUrl = getPlacePhotoUrl(
+                            resultsPoints[index].photoReference);
+                        return ListTile(
+                          leading: imageUrl.isNotEmpty
+                              ? Image.network(imageUrl,
+                                  width: 50, height: 50, fit: BoxFit.cover)
+                              : null,
+                          title: Text(
+                              resultsPoints[index].name ?? 'Unnamed Place'),
+                          onTap: () {
+                            Navigator.pop(context);
+                            _showRoute(route);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-
+  String getPlacePhotoUrl(String? photoReference) {
+    if (photoReference == null || photoReference.isEmpty) return '';
+    return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$google_api_key';
+  }
 
   void _showRoute(List<LatLng> route) {
-  setState(() {
-    markers.clear();
-    polylines.clear();
+    setState(() {
+      markers.clear();
+      polylines.clear();
 
-    // Add markers for each point in the route
-    for (int i = 0; i < route.length; i++) {
-      markers.add(Marker(
-        markerId: MarkerId(i.toString()),
-        position: route[i],
-        infoWindow: InfoWindow(title: 'Point ${i + 1}'),
-      ));
-    }
+      // Add markers for each point in the route
+      for (int i = 0; i < route.length; i++) {
+        markers.add(Marker(
+          markerId: MarkerId(i.toString()),
+          position: route[i],
+          infoWindow: InfoWindow(title: 'Point ${i + 1}'),
+        ));
+      }
 
-    // Generate excursion road using _findExcursionRoad
-    _findExcursionRoad(route).then((excursionRoad) {
-      // Add polyline for excursion road
-      polylines.add(Polyline(
-        polylineId: PolylineId('excursionRoad'),
-        points: excursionRoad,
-        color: Colors.blue,
-        width: 5,
-      ));
+      // Generate excursion road using _findExcursionRoad
+      _findExcursionRoad(route).then((excursionRoad) {
+        // Add polyline for excursion road
+        polylines.add(Polyline(
+          polylineId: const PolylineId('excursionRoad'),
+          points: excursionRoad,
+          color: Colors.blue,
+          width: 5,
+        ));
+      });
     });
-  });
-}
-
-Future<List<LatLng>> _findExcursionRoad(List<LatLng> points) async {
-  List<LatLng> excursionRoad = [];
-  for (int i = 0; i < points.length; i++) {
-    LatLng origin = points[i];
-    LatLng destination = points[(i + 1) % points.length];
-    List<LatLng> segmentPoints = await _getDirections(origin, destination);
-    excursionRoad.addAll(segmentPoints);
   }
-  return excursionRoad;
-}
+
+  Future<List<LatLng>> _findExcursionRoad(List<LatLng> points) async {
+    List<LatLng> excursionRoad = [];
+    for (int i = 0; i < points.length; i++) {
+      LatLng origin = points[i];
+      LatLng destination = points[(i + 1) % points.length];
+      List<LatLng> segmentPoints = await _getDirections(origin, destination);
+      excursionRoad.addAll(segmentPoints);
+    }
+    return excursionRoad;
+  }
 
   Future<void> getresponse() async {
     List<String> placeTypes = selectedFilters;
     String typesParameter = placeTypes.join('|');
-    print(
-        'getresponse() | radius: $radius / sourceLocation: $sourceLocation/ destinationLocation: $destinationLocation/ filters $selectedFilters');
 
     var url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' +
-            latitude.toString() +
-            ',' +
-            longitude.toString() +
-            '&radius=' +
-            radius.toString() +
-            '&types=' +
-            typesParameter +
-            '&key=' +
-            google_api_key);
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&types=$typesParameter&key=$google_api_key');
 
     var response = await http.post(url);
     nearbyPlacesResponse.clearResults();
     nearbyPlacesResponse =
         NearbyPlacesResponse.fromJson(jsonDecode(response.body));
 
+    // Запит на отримання назв місць
+    for (var result in nearbyPlacesResponse.results!) {
+      if (result.name == null) {
+        String placeId = result.placeId!;
+        String placeDetailUrl =
+            'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name&key=$google_api_key';
+        var detailResponse = await http.get(Uri.parse(placeDetailUrl));
+        var placeDetail = jsonDecode(detailResponse.body);
+        result.name = placeDetail['result']['name'];
+      }
+    }
+
     setState(() {});
   }
 
-  List<LatLng> getNearbyPlaces() {
+  Future<void> getNearbyPlaces() async {
     longitude = sourceLocation.longitude;
     latitude = sourceLocation.latitude;
 
-    getresponse();
+    await getresponse();
 
     for (var result in nearbyPlacesResponse.results!) {
       double? lat = result.geometry?.location?.lat;
       double? lng = result.geometry?.location?.lng;
-      if (lat != null && lng != null) {
+      String? placeId = result.placeId;
+      String? photoReference = result.photoReference;
+
+      if (lat != null && lng != null && placeId != null) {
+        Results place = Results(
+          geometry: result.geometry,
+          placeId: placeId,
+          name: result.name,
+          photoReference: photoReference,
+        );
+        await place.fetchPlaceDetails();
         points.add(LatLng(lat, lng));
+        resultsPoints.add(place);
       }
     }
-    return points;
+
+    setState(() {});
   }
 
   Future<void> drawExcursionRoad(List<LatLng> points) async {
     List<LatLng> excursionRoad = await _findExcursionRoad(points);
     setState(() {
       polylines.add(Polyline(
-        polylineId: PolylineId('excursionRoad'),
+        polylineId: const PolylineId('excursionRoad'),
         points: excursionRoad,
         color: Colors.blue,
         width: 5,
@@ -319,7 +394,6 @@ Future<List<LatLng>> _findExcursionRoad(List<LatLng> points) async {
     });
   }
 
-  
   Future<List<LatLng>> _getDirections(LatLng origin, LatLng destination) async {
     String url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&mode=walking&key=$google_api_key';
@@ -401,12 +475,24 @@ class NearbyPlacesResponse {
 
 class Results {
   Geometry? geometry;
+  String? name;
+  String? placeId;
+  String? photoReference;
 
-  Results({this.geometry});
+  Results({this.geometry, this.name, this.placeId, this.photoReference});
 
   Results.fromJson(Map<String, dynamic> json) {
     geometry =
         json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null;
+    name = json['name'];
+    placeId = json['place_id'];
+    if (json['photos'] != null && json['photos'].isNotEmpty) {
+      photoReference = json['photos'][0]['photo_reference'];
+    }
+  }
+
+  Future<void> fetchPlaceDetails() async {
+    // Fetch additional details like photo, etc.
   }
 }
 

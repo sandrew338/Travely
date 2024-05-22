@@ -1,25 +1,29 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travely/pages/autocomplete_page';
+
 class FilterSearch extends StatefulWidget {
-  final Function(List<String> filters, double radius, LatLng sourceLocation, LatLng destinationLocation) onFilterChanged;
+  final Function(List<String> filters, double radius, LatLng sourceLocation,
+      LatLng destinationLocation) onFilterChanged;
   final List<String> initialFilters;
   final double initialRadius;
   final LatLng sourceLocation;
   final LatLng destinationLocation;
   final VoidCallback onApplyFilters;
 
-  FilterSearch({
-    Key? key,
+  const FilterSearch({
+    super.key,
     required this.onFilterChanged,
     required this.initialFilters,
     required this.initialRadius,
     required this.sourceLocation,
     required this.destinationLocation,
     required this.onApplyFilters,
-  }) : super(key: key);
+  });
 
   @override
   _FilterSearchState createState() => _FilterSearchState();
@@ -28,8 +32,8 @@ class FilterSearch extends StatefulWidget {
 class _FilterSearchState extends State<FilterSearch> {
   late double _currentSliderValue;
   late Map<String, bool> _filters;
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _destinationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
 
   @override
   void initState() {
@@ -57,7 +61,8 @@ class _FilterSearchState extends State<FilterSearch> {
         .map((entry) => entry.key)
         .toList();
 
-    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000, widget.sourceLocation, widget.destinationLocation);
+    widget.onFilterChanged(selectedFilters, _currentSliderValue * 1000,
+        widget.sourceLocation, widget.destinationLocation);
     widget.onApplyFilters();
   }
 
@@ -67,7 +72,9 @@ class _FilterSearchState extends State<FilterSearch> {
       MaterialPageRoute(
         builder: (context) => AutocompleteScreen(
           isLocation: isLocation,
-          initialText: isLocation ? _locationController.text : _destinationController.text,
+          initialText: isLocation
+              ? _locationController.text
+              : _destinationController.text,
         ),
       ),
     );
@@ -78,7 +85,10 @@ class _FilterSearchState extends State<FilterSearch> {
           _locationController.text = result['description'];
           final newSourceLocation = LatLng(result['lat'], result['lng']);
           widget.onFilterChanged(
-            _filters.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
+            _filters.entries
+                .where((entry) => entry.value)
+                .map((entry) => entry.key)
+                .toList(),
             _currentSliderValue * 1000,
             newSourceLocation,
             widget.destinationLocation,
@@ -87,7 +97,10 @@ class _FilterSearchState extends State<FilterSearch> {
           _destinationController.text = result['description'];
           final newDestinationLocation = LatLng(result['lat'], result['lng']);
           widget.onFilterChanged(
-            _filters.entries.where((entry) => entry.value).map((entry) => entry.key).toList(),
+            _filters.entries
+                .where((entry) => entry.value)
+                .map((entry) => entry.key)
+                .toList(),
             _currentSliderValue * 1000,
             widget.sourceLocation,
             newDestinationLocation,
@@ -100,11 +113,11 @@ class _FilterSearchState extends State<FilterSearch> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Color(0xFFEEF0F2),
+      backgroundColor: const Color(0xFFEEF0F2),
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: Colors.black),
+        side: const BorderSide(color: Colors.black),
       ),
       child: Container(
         width: 360,
@@ -123,7 +136,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   borderRadius: BorderRadius.circular(32.0),
                   borderSide: BorderSide.none,
                 ),
-                fillColor: Color(0xFFDADDD8),
+                fillColor: const Color(0xFFDADDD8),
                 filled: true,
                 prefixIcon: Container(
                   height: 25,
@@ -138,7 +151,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   ),
                 ),
                 hintText: 'Enter your location',
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
                   fontFamily: 'Kanit',
@@ -161,7 +174,7 @@ class _FilterSearchState extends State<FilterSearch> {
                     borderRadius: BorderRadius.circular(32.0),
                     borderSide: BorderSide.none,
                   ),
-                  fillColor: Color(0xFFDADDD8),
+                  fillColor: const Color(0xFFDADDD8),
                   filled: true,
                   prefixIcon: Container(
                     height: 25,
@@ -176,7 +189,7 @@ class _FilterSearchState extends State<FilterSearch> {
                     ),
                   ),
                   hintText: 'Destination (optional)',
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     fontSize: 14,
                     color: Colors.black,
                     fontFamily: 'Kanit',
@@ -206,7 +219,7 @@ class _FilterSearchState extends State<FilterSearch> {
                 ),
               ),
               child: Slider(
-                inactiveColor: Color(0xFFFAFAFF),
+                inactiveColor: const Color(0xFFFAFAFF),
                 value: _currentSliderValue,
                 min: 0.0,
                 max: 20.0,
@@ -226,7 +239,7 @@ class _FilterSearchState extends State<FilterSearch> {
                   child: Text(
                     '${_currentSliderValue.toStringAsFixed(1)} km',
                     textAlign: TextAlign.right,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black,
                       fontFamily: 'Kanit',
@@ -252,22 +265,23 @@ class _FilterSearchState extends State<FilterSearch> {
                 childAspectRatio: 5,
                 mainAxisSpacing: 4,
                 crossAxisSpacing: 0,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: _filters.keys.map((String key) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       children: [
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
+                            padding: const EdgeInsets.all(5),
+                            decoration: const BoxDecoration(
                               color: Color(0xFFD9D9D9),
-                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
                             ),
                             child: Text(
                               key,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black,
                                 fontFamily: 'Kanit',
@@ -309,10 +323,11 @@ class _FilterSearchState extends State<FilterSearch> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close the dialog without applying filters
+                    Navigator.pop(
+                        context); // Close the dialog without applying filters
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Color(0xFFD9D9D9),
+                    foregroundColor: const Color(0xFFD9D9D9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -355,7 +370,7 @@ class MySliderComponentShape extends SliderComponentShape {
         Rect.fromCenter(center: center, width: 24, height: 24),
         const Radius.circular(32),
       ),
-      Paint()..color = Color.fromARGB(255, 0, 0, 0),
+      Paint()..color = const Color.fromARGB(255, 0, 0, 0),
     );
     canvas.drawRRect(
       RRect.fromRectAndRadius(

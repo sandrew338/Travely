@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:travely/pages/map_page.dart';
@@ -5,7 +7,7 @@ import 'package:travely/pages/map_page.dart';
 class ImageCarousel extends StatefulWidget {
   final List<String> images;
 
-  ImageCarousel({required this.images});
+  const ImageCarousel({super.key, required this.images});
 
   @override
   _ImageCarouselState createState() => _ImageCarouselState();
@@ -20,7 +22,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
   void initState() {
     super.initState();
     _controller = PageController(initialPage: _currentPage);
-    _timer = Timer.periodic(Duration(seconds: 4), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
       if (_currentPage < widget.images.length - 1) {
         _currentPage++;
       } else {
@@ -29,7 +31,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
 
       _controller.animateToPage(
         _currentPage,
-        duration: Duration(milliseconds: 350),
+        duration: const Duration(milliseconds: 350),
         curve: Curves.easeIn,
       );
     });
@@ -55,7 +57,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
 }
 
 class RoutesPage extends StatefulWidget {
-  const RoutesPage({Key? key}) : super(key: key);
+  const RoutesPage({super.key});
 
   @override
   State<RoutesPage> createState() => _RoutesPageState();
@@ -64,15 +66,15 @@ class RoutesPage extends StatefulWidget {
 class _RoutesPageState extends State<RoutesPage> {
   final List<Map<String, dynamic>> items = [
     {
-      'title': 'Заголовок 1',
-      'text': 'Текст 1',
+      'title': 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1',
+      'text': 'пїЅпїЅпїЅпїЅпїЅ 1',
       'images': [
         'lib/images/images-1.png',
         'lib/images/images-2.png',
         'lib/images/images-3.png'
       ]
     },
-    // інші елементи...
+    // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ...
   ];
 
   @override
@@ -94,7 +96,7 @@ class _RoutesPageState extends State<RoutesPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) =>  MapPage(onItemTapped: (int ) { return 0; },)),
+                MaterialPageRoute(builder: (context) => const MapPage()),
               );
             },
             child: Card(
@@ -118,7 +120,7 @@ class _RoutesPageState extends State<RoutesPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return Dialog(
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 700,
                                     width: 400,
                                     child: Padding(
@@ -135,7 +137,7 @@ class _RoutesPageState extends State<RoutesPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                         MapPage(onItemTapped: (int ) { return 0; },)),
+                                                        const MapPage()),
                                               );
                                             },
                                             child: ImageCarousel(
@@ -144,7 +146,7 @@ class _RoutesPageState extends State<RoutesPage> {
                                           const SizedBox(height: 10),
                                           Text(
                                             item['title'],
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -176,7 +178,7 @@ class _RoutesPageState extends State<RoutesPage> {
                           },
                           child: Text(
                             item['title'],
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16.0,
                             ),
