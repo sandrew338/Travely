@@ -23,8 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> editField(String field) async {
     Map<String, String> fieldTranslations = {
-      "username": "ім'я користувача",
-      "bio": "опис",
+      "username": "username",
+      "bio": "bio",
     };
 
     String translatedField = fieldTranslations[field] ?? field;
@@ -35,14 +35,14 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text(
-          "Редагувати $translatedField",
+          "Edit $translatedField",
           style: const TextStyle(color: Colors.white),
         ),
         content: TextField(
           autofocus: true,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: "Введіть $translatedField",
+            hintText: "Enter $translatedField",
             hintStyle: const TextStyle(color: Colors.grey),
           ),
           onChanged: (value) {
@@ -52,14 +52,14 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           TextButton(
             child: const Text(
-              "Скасувати",
+              "Cancel",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             child: const Text(
-              "Зберегти",
+              "Save",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.of(context).pop(newValue),
@@ -267,8 +267,8 @@ class _OldProfilePageState extends State<OldProfilePage> {
 
   Future<void> editField(String field) async {
     Map<String, String> fieldTranslations = {
-      "username": "ім'я користувача",
-      "bio": "опис",
+      "username": "username",
+      "bio": "bio",
     };
 
     String translatedField = fieldTranslations[field] ?? field;
@@ -279,14 +279,14 @@ class _OldProfilePageState extends State<OldProfilePage> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[900],
         title: Text(
-          "Редагувати $translatedField",
+          "Edit $translatedField",
           style: const TextStyle(color: Colors.white),
         ),
         content: TextField(
           autofocus: true,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            hintText: "Введіть $translatedField",
+            hintText: "Enter $translatedField",
             hintStyle: const TextStyle(color: Colors.grey),
           ),
           onChanged: (value) {
@@ -296,14 +296,14 @@ class _OldProfilePageState extends State<OldProfilePage> {
         actions: [
           TextButton(
             child: const Text(
-              "Скасувати",
+              "Cancel",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(
             child: const Text(
-              "Зберегти",
+              "Save",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () => Navigator.of(context).pop(newValue),
@@ -318,7 +318,7 @@ class _OldProfilePageState extends State<OldProfilePage> {
     }
   }
 
-// Оновлений метод для вибору зображення за допомогою ImagePicker
+// Updated method to select an image using ImagePicker
   Future<void> uploadProfilePicture() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -329,40 +329,39 @@ class _OldProfilePageState extends State<OldProfilePage> {
     String fileName = currentUser.email!;
 
     try {
-      // Завантажуємо зображення на Firebase Storage
+      // Upload the image to Firebase Storage
       await FirebaseStorage.instance
           .ref('profile_pictures/$fileName')
           .putFile(imageFile);
 
-      // Отримуємо URL завантаженого зображення
+      // Get the URL of the uploaded image
       String downloadURL = await FirebaseStorage.instance
           .ref('profile_pictures/$fileName')
           .getDownloadURL();
 
-      // Оновлюємо URL профілю в базі даних Firestore
+      // Update the profile URL in the Firestore database
       await usersCollection
           .doc(currentUser.email)
           .update({'profilePicUrl': downloadURL});
 
-      // Оновлюємо стан відображення
+      // Update the state to reflect the new profile picture
       setState(() {});
 
-      // Повідомляємо користувача про успішне завантаження
+      // Notify the user of successful upload
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Фотографію профілю завантажено успішно!'),
+          content: Text('Profile picture uploaded successfully!'),
         ),
       );
     } catch (e) {
-      // Виводимо помилку у відладковому режимі
+      // Print error in debug mode
       if (kDebugMode) {
         print("Error uploading profile picture: $e");
       }
-      // Повідомляємо користувача про помилку
+      // Notify the user of an error
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-              'Помилка під час завантаження фотографії профілю. Будь ласка, спробуйте ще раз.'),
+          content: Text('Error uploading profile picture. Please try again.'),
         ),
       );
     }
@@ -384,8 +383,8 @@ class _OldProfilePageState extends State<OldProfilePage> {
             ),
             IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
           ],
-          title: Text("Профіль користувача",
-              style: TextStyle(color: Colors.grey[300])),
+          title:
+              Text("User Profile", style: TextStyle(color: Colors.grey[300])),
           backgroundColor: Colors.grey[900],
         ),
         body: StreamBuilder<DocumentSnapshot>(
@@ -424,13 +423,13 @@ class _OldProfilePageState extends State<OldProfilePage> {
                     // User details
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Деталі користувача",
+                      child: Text("User Details",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
                     // Username
                     MyTextBox(
-                      sectionName: "Ім'я користувача",
+                      sectionName: "Username",
                       text: userData["username"],
                       onPressed: () => editField("username"),
                     ),
@@ -441,7 +440,7 @@ class _OldProfilePageState extends State<OldProfilePage> {
 
                     // Bio
                     MyTextBox(
-                      sectionName: "Опис",
+                      sectionName: "Bio",
                       text: userData["bio"],
                       onPressed: () => editField("bio"),
                     ),
@@ -449,7 +448,7 @@ class _OldProfilePageState extends State<OldProfilePage> {
                     // User posts
                     Padding(
                       padding: const EdgeInsets.only(left: 25.0),
-                      child: Text("Публікації користувача",
+                      child: Text("User Posts",
                           style: TextStyle(color: Colors.grey[600])),
                     ),
 
