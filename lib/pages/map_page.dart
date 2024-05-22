@@ -15,7 +15,7 @@ import 'package:travely/components/slide_menu.dart';
 class MapPage extends StatefulWidget {
   final Function(int) onItemTapped;
 
-  MapPage({required this.onItemTapped});
+  const MapPage({super.key, required this.onItemTapped});
 
   @override
   _MapPageState createState() => _MapPageState();
@@ -23,11 +23,9 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   List<Results> resultPoints  = [];
-  late GoogleMapController _controller;
-  TextEditingController _locationController = TextEditingController();
-  TextEditingController _destinationController = TextEditingController();
-  LatLng sourceLocation = LatLng(0.0, 0.0);
-  LatLng destinationLocation = LatLng(0.0, 0.0);
+  final TextEditingController _locationController = TextEditingController();
+  LatLng sourceLocation = const LatLng(0.0, 0.0);
+  LatLng destinationLocation = const LatLng(0.0, 0.0);
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   Timer? _debounce;
   double latitude = 49.8401193;

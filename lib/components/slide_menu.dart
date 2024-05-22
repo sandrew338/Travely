@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:travely/pages/calendar_page.dart';
-import 'package:travely/pages/map_page.dart';
-import 'package:travely/pages/profile_page.dart';
-import 'package:travely/pages/routes_page.dart';
 
 class SideMenu extends StatelessWidget {
   final Function(int) onItemTapped;
 
-  SideMenu({required this.onItemTapped});
+  const SideMenu({super.key, required this.onItemTapped});
 
   @override
   Widget build(BuildContext context) {
@@ -15,35 +11,35 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            child: Text('Menu'),
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
+            child: Text('Menu'),
           ),
           ListTile(
-            title: Text('Map'),
+            title: const Text('Map'),
             onTap: () {
               Navigator.pop(context);
               onItemTapped(0);
             },
           ),
           ListTile(
-            title: Text('RoutesPage'),
+            title: const Text('RoutesPage'),
             onTap: () {
               Navigator.pop(context);
               onItemTapped(1);
             },
           ),
           ListTile(
-            title: Text('CalendarPage'),
+            title: const Text('CalendarPage'),
             onTap: () {
               Navigator.pop(context);
               onItemTapped(2);
             },
           ),
           ListTile(
-            title: Text('ProfilePage'),
+            title: const Text('ProfilePage'),
             onTap: () {
               Navigator.pop(context);
               onItemTapped(3);

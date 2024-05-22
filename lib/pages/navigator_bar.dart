@@ -38,9 +38,9 @@ class _NavigatorBarState extends State<NavigatorBar> {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           MapPage(onItemTapped: _onItemTapped,),
-          RoutesPage(),
-          CalendarPage(),
-          ProfilePage(),
+          const RoutesPage(),
+          const CalendarPage(),
+          const ProfilePage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
