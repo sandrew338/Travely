@@ -13,19 +13,21 @@ import 'package:travely/components/filter_search.dart';
 import 'package:travely/components/slide_menu.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  final Function(int) onItemTapped;
+
+  MapPage({required this.onItemTapped});
 
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  //bool _filtersChanged = false;
-  List<Results> resultsPoints = [];
-
-  final TextEditingController _locationController = TextEditingController();
-  LatLng sourceLocation = const LatLng(0.0, 0.0);
-  LatLng destinationLocation = const LatLng(0.0, 0.0);
+  List<Results> resultPoints  = [];
+  late GoogleMapController _controller;
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _destinationController = TextEditingController();
+  LatLng sourceLocation = LatLng(0.0, 0.0);
+  LatLng destinationLocation = LatLng(0.0, 0.0);
   NearbyPlacesResponse nearbyPlacesResponse = NearbyPlacesResponse();
   Timer? _debounce;
   double latitude = 49.8401193;
@@ -40,7 +42,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(onItemTapped: widget.onItemTapped), // Pass the callback function here
+      drawer: SideMenu(onItemTapped: widget.onItemTapped),
       body: Stack(
         children: <Widget>[
           GoogleMap(
@@ -259,14 +261,14 @@ class _MapPageState extends State<MapPage> {
                       itemCount: route.length,
                       itemBuilder: (context, index) {
                         String imageUrl = getPlacePhotoUrl(
-                            resultsPoints[index].photoReference);
+                            resultPoints[index].photoReference);
                         return ListTile(
                           leading: imageUrl.isNotEmpty
                               ? Image.network(imageUrl,
                                   width: 50, height: 50, fit: BoxFit.cover)
                               : null,
                           title: Text(
-                              resultsPoints[index].name ?? 'Unnamed Place'),
+                              resultPoints[index].name ?? 'Unnamed Place'),
                           onTap: () {
                             Navigator.pop(context);
                             _showRoute(route);
@@ -375,7 +377,7 @@ class _MapPageState extends State<MapPage> {
         );
         await place.fetchPlaceDetails();
         points.add(LatLng(lat, lng));
-        resultsPoints.add(place);
+        resultPoints.add(place);
       }
     }
 
