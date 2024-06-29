@@ -381,3 +381,30 @@ class MySliderComponentShape extends SliderComponentShape {
     );
   }
 }
+
+
+
+abstract class FilterStrategy {
+  void applyFilter(Map<String, bool> filters, double radius, LatLng source, LatLng destination);
+}
+
+class BasicFilterStrategy implements FilterStrategy {
+  @override
+  void applyFilter(Map<String, bool> filters, double radius, LatLng source, LatLng destination) {
+    // Базова реалізація фільтрації
+  }
+}
+
+abstract class TextFieldDecorator {
+  String decorate(String text);
+}
+
+class PrefixIconDecorator implements TextFieldDecorator {
+  @override
+  String decorate(String text) {
+    return "PrefixIcon($text)";
+  }
+}
+
+
+
