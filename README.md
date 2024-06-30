@@ -31,3 +31,6 @@ To get started with this Flutter project, follow these steps:
 
    ```bash
    git clone https://github.com/your-username/travely.git
+
+
+![Alt text](/photos_for_README/MAP-filter.png "Optional title")
