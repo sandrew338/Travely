@@ -1,5 +1,5 @@
-# Travely
-![Alt text](assets\images\travely.png "Optional title")
+[<img src="/assets/images/travely.png" width="250"/>](/assets/images/travely.png)
+
 Travely is a platform for discovering interesting interactive tours. Residents and visitors of the city who want to spend their time actively can generate walking routes in our application. It is mainly aimed at tourists who want to visit as many interesting places as possible within a limited time.
 
 ## Introduction
@@ -24,11 +24,12 @@ Have you ever arrived in a city and couldn't find interesting places to visit? H
 
 ## Screenshots
 
-![Alt text](/photos_for_README/MAP-filter.png "Optional title")
 ![Alt text](/photos_for_README/MAP-1.png "Optional title")
-![Alt text](photos_for_README/Popular.png "Optional title")
+![Alt text](/photos_for_README/MAP-filter.png "Optional title")
+![Alt text](photos_for_README/MAP-routs-2.png "Optional title")
 ![Alt text](photos_for_README/Calendar.png "Optional title")
 ![Alt text](photos_for_README/Profile-1.png "Optional title")
-![Alt text](photos_for_README/MAP-routs-2.png "Optional title")
+![Alt text](photos_for_README/Popular.png "Optional title")
 
+## Video
 https://github.com/sandrew338/Travely/assets/82502480/5044f215-a949-495e-8ce5-1cac4eb35074
