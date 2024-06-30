@@ -8,6 +8,18 @@ Have you ever arrived in a city and couldn't find interesting places to visit? H
 
 ## Features
 
+## Features
+
+- **User-friendly and easy-to-understand design**
+- **Practicality and adaptability to all devices**
+- **Functionality that will be improved over time**
+- **Speed and quality of route generation**
+- **Special route search based on user preferences**
+- **Availability of filters to sort routes by distance, type of walk, and starting point**
+- **Ability to become a moderator and review other users' routes**
+- **Moderators earn points that can be used later to purchase premium routes**
+- **Calendar for viewing previously completed routes**
+- **Ability to revisit and complete routes again**
 - **Filtering by initial geolocation**
 - **Filtering by radius**
 - **Filtering by places**
@@ -31,11 +43,10 @@ To get started with this Flutter project, follow these steps:
 
    ```bash
    git clone https://github.com/your-username/travely.git
-
-
 ![Alt text](/photos_for_README/MAP-filter.png "Optional title")
 ![Alt text](/photos_for_README/MAP-1.png "Optional title")
 ![Alt text](photos_for_README/Popular.png "Optional title")
 ![Alt text](photos_for_README/Calendar.png "Optional title")
 ![Alt text](photos_for_README/Profile-1.png "Optional title")
-![Alt text](https://github.com/sandrew338/Travely/issues/1#issue-2382394668)
+
+https://github.com/sandrew338/Travely/assets/82502480/5044f215-a949-495e-8ce5-1cac4eb35074
